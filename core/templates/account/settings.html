@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block extend_head %}
+<link rel="stylesheet" type="text/css" href="/static/css/registration.css" title="default" />
+{% endblock %}
+
+{% block main %}
+{{message}}<br/>
+
+<form class="register_form" action="." method="POST">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <div class="form_line">
+        <p>Nickname:</p>
+        <input type="text" name="display_name"/> <br/>
+    </div>
+    <input class="register_button" type="submit" value="Save" />
+</form>
+{% endblock main %}

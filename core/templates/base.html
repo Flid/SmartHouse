@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<script>
+function signin_button_hide() {
+    document.getElementById("signin_button").style.display = "none";
+    var form = document.getElementById("login_form");
+    form.style.display = "inline-block";
+    form.getElementsByClassName("login")[0].focus();
+}
+</script>
+
+<script src="/static/js/jquery-2.1.1.min.js"></script>
+
+<head lang="en">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css" title="default" />
+    <meta charset="UTF-8">
+    <title></title>
+    {% block extend_head %} {% endblock %}
+</head>
+<body>
+
+<div class="body_container">
+
+<div class="top_line">
+    <div class="top_line_img"></div>
+    <div class="top_line_holder">
+          {% if current_user.is_authenticated() %}
+          <div class="right_container">
+            <form id="logout_form" action="{{ url_for('fe.account.logout') }}" method="POST">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+              <span class="logout_button" onclick="document.getElementById('logout_form').submit();">Logout</span>
+            </form>
+          </div>
+          <div class="right_container">
+              <a href="{{ url_for('fe.account.settings') }}">
+                  <span class="settings_button"> {{ current_user.display_name }} </span>
+              </a>
+          </div>
+          {% else %}
+          <div class="right_container">
+              <a href="{{ url_for('fe.account.register') }}">Register</a>
+          </div>
+          <div onclick="signin_button_hide()" id="signin_button">
+              <p>Sign In</p>
+          </div>
+          <form id="login_form" action="{{ url_for('fe.account.login') }}" method="POST">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+              <input class="login" type="text" name="login"/>
+              <input class="password" type="text" name="password"/>
+              <input class="submit" type="submit" value="Go!"/>
+          </form>
+          {% endif %}
+
+      </div>
+</div>
+
+<div class="header">
+  <a href="{{ url_for('fe.index') }}"><div class="logo"></div></a>
+  <div class="menu">
+      {% block menu %}
+        <ul>
+            <li>Menu Item 1</li>
+            <li>Menu Item 2</li>
+            <li>Menu Item 3</li>
+            <li>Menu Item 4</li>
+            <li>Menu Item 5</li>
+        </ul>
+    {% endblock %}
+  </div>
+</div>
+
+<div class="content">
+    {% block content %} {% endblock %}
+</div>
+</div>
+
+<div class="footer"></div>
+
+</body>
+</html>
