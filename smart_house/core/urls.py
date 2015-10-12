@@ -13,19 +13,18 @@ fe_account_urls = [
 
 frontend_urls = [
     url(r'^$', frontend.main.MainPageView.as_view(), name='index'),
-    url(r'^sensors$', frontend.main.SensorsView.as_view(), name='sensors'),
     url(r'^account/', include(fe_account_urls, namespace='account')),
 ]
 
-api_account_urls = [
-    url(r'^login_occupation$', api.account.LoginOccupationView.as_view(), name='login_occupation'),
+api_service_urls = [
+    url('^update$', api.service.UpdateView.as_view(), name='update')
 ]
 
 api_urls = [
-    url(r'^account/', include(api_account_urls, namespace='account')),
+    url(r'^service/', include(api_service_urls, namespace='service')),
 ]
 
 urlpatterns = [
     url(r'^', include(frontend_urls, namespace='fe')),
-    url(r'^', include(api_urls, namespace='api')),
+    url(r'^api/', include(api_urls, namespace='api')),
 ]

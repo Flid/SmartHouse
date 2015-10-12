@@ -2,8 +2,6 @@
 
 from .base import *
 
-SENSORS['DHT22'] = {
-    'enabled': True,
-}
+DEBUG = False
 
-from prod_config import DATABASES
+from prod_config import *

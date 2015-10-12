@@ -12,15 +12,11 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import logging
+
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'a31g9vm0=iq-u5phq023owy7__2y6pqf7lr3#5yefw%+hu#g$b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -100,5 +96,5 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = '/var/www/smart_house/static/'
 
+GIT_BRANCH = 'master'
 
-SENSORS = {}

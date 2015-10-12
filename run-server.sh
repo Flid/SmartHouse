@@ -5,4 +5,4 @@ if [ -z $1 ];
     exit 1
 fi
 
-./ve/bin/python manage.py runserver 127.0.0.1:8090 --settings=smart_house.settings.$1
+./ve/bin/python manage.py runserver 127.0.0.1:10080 --settings=smart_house.settings.$1

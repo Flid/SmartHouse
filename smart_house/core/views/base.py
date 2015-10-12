@@ -70,3 +70,8 @@ class BaseTemplateView(BaseView):
     def render_redirect(self, url_name):
         url = reverse(url_name)
         return http.HttpResponseRedirect(url)
+
+
+class BaseAPIView(BaseView):
+    def render_json(self, data):
+        return http.JsonResponse(data)
