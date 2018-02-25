@@ -1,22 +1,20 @@
-# TODO install adm
-kubeadm reset
-kubeadm init --config kubeadm.yaml
+#!/bin/bash
+set -e
 
-mkdir -p $HOME/.kube
-rm -f $HOME/.kube/config
-cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-chown $(id -u):$(id -g) $HOME/.kube/config
-kubectl apply -f https://git.io/weave-kube-1.6
+./stop.sh
+rm -rf /opt/portainer/
+./run.sh
+sleep 1
 
 
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+echo "Seting up admin"
+curl -XPOST http://localhost:9000/api/users/admin/init -H "Content-Type: application/json" -d "{\"Username\": \"admin\", \"Password\": \"$ADMIN_PASSWORD\"}" --fail
+echo "$ADMIN_PASSWORD" > /opt/portainer/admin_password
+chown root:root /opt/portainer/admin_password
+chmod 0600 /opt/portainer/admin_password
 
+echo "Authenticating"
+AUTH_TOKEN=`./authenticate.sh`
 
-#kubectl apply -f ingress/ns-and-sa.yaml
-
-# TODO fix certificates
-#kubectl apply -f ingress/default-server-secret.yaml
-
-#kubectl apply -f ingress/nginx-config.yaml
-#kubectl apply -f ingress/nginx-deploy.yaml
-#kubectl create -f ingress/setup-nodeport.yaml
+# Create an initial endpoint, ID=1
+curl -XPOST http://localhost:9000/api/endpoints -H "Authorization: Bearer $AUTH_TOKEN" -H "Content-Type: application/json" -d '{"Name": "local", "URL": "unix:///var/run/docker.sock"}' --fail
