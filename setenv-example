@@ -1,1 +1,1 @@
-export ADMIN_PASSWORD=megapassword
+export PORTAINER_ADMIN_PASSWORD=megapassword
