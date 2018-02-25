@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    machine:
+      enabled: true
+      docker_layer_caching: false
+
+    working_directory: ~/smart_house
+
+    steps:
+      - checkout
+      - run:
+          name: Build prerequisites
+          command: |
+            echo "$CIRCLE_SHA1" > .commit-id
+            docker --version
+            docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+      - run: docker build -t antonkir/testapp:$(git rev-parse HEAD) ./testapp
+      - deploy:
+          command: |
+            docker run --rm --privileged multiarch/qemu-user-static:register --reset
+            docker push antonkir/testapp:$(git rev-parse HEAD)
