@@ -14,11 +14,12 @@ jobs:
             echo "$CIRCLE_SHA1" > .commit-id
             docker --version
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+            uname -a
       - run:
           name: Builing container
           command: |
-            cp -r qemu testapp/
-            docker build -t antonkir/testapp:$(git rev-parse HEAD) ./testapp
+            cp -r qemu deployer/
+            docker build -t antonkir/deployer:$(git rev-parse HEAD) ./deployer
       - deploy:
           command: |
-            docker push antonkir/testapp:$(git rev-parse HEAD)
+            docker push antonkir/deployer:$(git rev-parse HEAD)
