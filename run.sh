@@ -1,5 +1,14 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env sh
 
-docker run -d -p 9000:9000 --restart always --name 'portainer_controller' -v /var/run/docker.sock:/var/run/docker.sock -v /opt/portainer:/data portainer/portainer
+python manage.py collectstatic --noinput
 
+python manage.py migrate --noinput
+
+python manage.py create_default_admin
+
+if [ "$(echo "$DEBUG" | awk '{print tolower($0)}')" =  "true" ]
+then
+    python manage.py runserver 0.0.0.0:8000
+else
+    uwsgi --ini $ROOT/uwsgi.ini
+fi

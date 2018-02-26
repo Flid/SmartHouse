@@ -18,7 +18,6 @@ jobs:
       - run:
           name: Builing container
           command: |
-            cp -r qemu deployer/
             docker build -t antonkir/deployer:$(git rev-parse HEAD) ./deployer
       - deploy:
           command: |
