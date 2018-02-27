@@ -23,7 +23,8 @@ class BaseHTTPClientError(Exception):
 
 class BaseHTTPClient:
     def __init__(self, base_url):
-        self.base_url = base_url
+        # urljoin will only work correct with trailing slash
+        self.base_url = base_url.rstrip('/') + '/'
 
     def _perform_request(self, method, path, **kwargs):
         url = urljoin(self.base_url, path)

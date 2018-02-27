@@ -17,6 +17,18 @@ Sets up a Portainer (Docker control panel), deployer script (gives an interface 
 
 * Set up master controller node:
 ```
-export PORTAINER_ADMIN_PASSWORD=<megapassword>
-sudo -E ./setup.sh
+cp setenv-example setenv-mynode
+```
+
+Edit the new file. The first section has some parameters you need to overwrite,
+other sections can be left as is.
+
+Now install the requirements locally (you might want to use virtualenv)
+and provision the master node. Define one host to ssh to,
+user needs to have root access.
+
+```
+pip install -r requirements.txt
+
+fab provision_master_node --hosts 'root@192.168.0.10:22'
 ```

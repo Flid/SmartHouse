@@ -1,12 +1,61 @@
-export PORTAINER_ADMIN_PASSWORD=megapassword
-export PORTAINER_BASE_URL='http://localhost:9000/api/'
-export CONTROL_PANEL_TAG='latest'
+# ========================================================================= #
+# Things you have to edit before you can proceed:
+# ========================================================================= #
+export PORTAINER_PORT='9000'
+
+# The address you will use for provisioning, should be accessible from your current machine
+# If you provision the master from a local network - it can match PORTAINER_LOCAL_BASE_URL
+export PORTAINER_EXTERNAL_HOST="http://10.20.30.40:$(PORTAINER_PORT)/api"
+
+# The address all containers will use inside a local network after provisioning.
+export PORTAINER_LOCAL_BASE_URL="http://192.168.0.111:$(PORTAINER_PORT)/api"
+
 export SECRET_KEY='mmmm...so secret'
+
+export POSTGRES_PASSWORD='snailshellpass'
+export RABBITMQ_PASSWORD='snailshellpass'
+export CONTROL_PANEL_PASSWORD='snailshellpass'
+export PORTAINER_ADMIN_PASSWORD='snailshellpass'
+
+# ========================================================================= #
+# Things you might want to customize, but it will work with the default settings
+# ========================================================================= #
 export DEBUG=false
-export PERSISTENT_DIR='/data'
-export DOCKERHUB_REPO=myrepo
 export LOG_LEVEL=DEBUG
-export POSTGRES_DBNAME_CONTROL_PANEL=snailshell_cp
-export POSTGRES_USER=snailshell
-export POSTGRES_PASSWORD=snailshellpass
-export POSTGRES_PORT=5432
+
+export CONTROL_PANEL_CONTAINER_NAME='ss_control_panel'
+export CONTROL_PANEL_IMAGE_NAME='antonkir/snailshell_control_panel'
+export CONTROL_PANEL_IMAGE_TAG='latest'
+export CONTROL_PANEL_USER='snailshell'
+
+export PORTAINER_LOCAL_ENDPOINT_NAME='local'
+export PORTAINER_DOCKER_CONTAINER_NAME='portainer_controller'
+export PORTAINER_IMAGE_NAME='portainer/portainer'
+export PORTAINER_IMAGE_TAG='latest'
+
+export POSTGRES_IMAGE_NAME='postgres'
+export POSTGRES_IMAGE_TAG='latest'
+export POSTGRES_CONTAINER_NAME='postgres_main'
+export POSTGRES_DBNAME_CONTROL_PANEL='snailshell_cp'
+export POSTGRES_USER='snailshell'
+# External port to access the DB
+export POSTGRES_PORT='5432'
+
+export RABBITMQ_IMAGE_NAME='rabbitmq'
+export RABBITMQ_IMAGE_TAG='3-management'
+export RABBITMQ_CONTAINER_NAME='rabbitmq_main'
+# External port to access RabbitMQ
+export RABBITMQ_PORT='5672'
+export RABBITMQ_MANAGEMENT_PORT='15672'
+export RABBITMQ_USER='snailshell'
+
+# ========================================================================= #
+# Things you should not touch really, it will break everything.
+# Unless you really know what you are doing.
+# ========================================================================= #
+# It's the first endpoint created, always has id 1
+export PORTAINER_LOCAL_ENDPOINT_ID='1'
+
+# Default docker socket for local communications. We don't reconfigure
+# docker to bind to socket on master node, as it's a security risk.
+export DOCKER_LOCAL_SOCKET_PATH='unix:///var/run/docker.sock'
