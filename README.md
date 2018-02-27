@@ -24,7 +24,7 @@ You need a machine with Ubuntu. Tested on 16.04.
 The steps provisioning performs:
 * Connect to `root@$MASTER_HOST:26` via SSH.
 * Install some Ubuntu packages, including Docker
-* Stop and delete all existing containers, if any.
+* Stop and delete all existing containers/images/volumes, if any.
 * Install and configure Portainer.
 Admin login is `$PORTAINER_ADMIN_USER`, password is `$PORTAINER_ADMIN_PASSWORD`.
 * Setting up PostgreSQL

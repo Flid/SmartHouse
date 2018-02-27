@@ -1,7 +1,6 @@
 # ========================================================================= #
 # Things you have to edit before you can proceed:
 # ========================================================================= #
-export PORTAINER_PORT='9000'
 
 # The address you will use for provisioning, should be accessible from your current machine
 # If you provision the master from a local network - it can match PORTAINER_LOCAL_BASE_URL
@@ -29,13 +28,14 @@ export CONTROL_PANEL_CONTAINER_NAME='ss_control_panel'
 export CONTROL_PANEL_IMAGE_NAME='antonkir/snailshell_control_panel'
 export CONTROL_PANEL_IMAGE_TAG='latest'
 export CONTROL_PANEL_USER='snailshell'
-export CONTROL_PANEL_PORT='9001'
+export CONTROL_PANEL_PORT='10001'
 export CONTROL_PANEL_ADMIN_USER='snailshell'
 
 export PORTAINER_LOCAL_ENDPOINT_NAME='local'
 export PORTAINER_DOCKER_CONTAINER_NAME='portainer_controller'
 export PORTAINER_IMAGE_NAME='portainer/portainer'
 export PORTAINER_IMAGE_TAG='latest'
+export PORTAINER_PORT='10000'
 
 export POSTGRES_IMAGE_NAME='postgres'
 export POSTGRES_IMAGE_TAG='latest'
@@ -50,7 +50,7 @@ export RABBITMQ_IMAGE_TAG='3-management'
 export RABBITMQ_CONTAINER_NAME='rabbitmq_main'
 # External port to access RabbitMQ
 export RABBITMQ_PORT='5672'
-export RABBITMQ_MANAGEMENT_PORT='15672'
+export RABBITMQ_MANAGEMENT_PORT='10002'
 export RABBITMQ_USER='snailshell'
 
 # ========================================================================= #
@@ -63,3 +63,6 @@ export PORTAINER_LOCAL_ENDPOINT_ID='1'
 # Default docker socket for local communications. We don't reconfigure
 # docker to bind to socket on master node, as it's a security risk.
 export DOCKER_LOCAL_SOCKET_PATH='unix:///var/run/docker.sock'
+
+# Should match a value from Dockerfile
+export CONTROL_PANEL_LINUX_USER='snailshell-cp-user'

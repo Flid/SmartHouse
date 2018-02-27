@@ -21,6 +21,7 @@ def load_env():
         'CONTROL_PANEL_PORT',
         'CONTROL_PANEL_ADMIN_USER',
         'CONTROL_PANEL_ADMIN_PASSWORD',
+        'CONTROL_PANEL_LINUX_USER',
 
         'PORTAINER_LOCAL_ENDPOINT_NAME',
         'PORTAINER_LOCAL_ENDPOINT_ID',
@@ -84,9 +85,10 @@ def provision_master_node():
     run('apt update')
     run('apt install lxc aufs-tools cgroup-lite apparmor docker.io curl python3')
 
-    # Stop and remove all containers
+    # Stop and remove all containers/images/volumes
     run('docker stop $(docker ps -a -q)')
     run('docker rm $(docker ps -a -q)')
+    run('docker volume rm $(sudo docker volume ls --format "{{.Name}}")')
     run('rm -rf /opt/portainer/')
 
     run(  # start Portainer
@@ -136,6 +138,7 @@ def provision_master_node():
             'PortBindings': {
                 '5432/tcp': [{'HostPort': env['POSTGRES_PORT']}],
             },
+            'RestartPolicy': {'Name': 'unless-stopped'},
         }
     )
     portainer_client.start_container(
@@ -164,6 +167,7 @@ def provision_master_node():
                 '5672/tcp': [{'HostPort': env['RABBITMQ_PORT']}],
                 '15672/tcp': [{'HostPort': env['RABBITMQ_MANAGEMENT_PORT']}],
             },
+            'RestartPolicy': {'Name': 'unless-stopped'},
         }
     )
     portainer_client.start_container(
@@ -205,6 +209,8 @@ def provision_master_node():
             'PortBindings': {
                 f'8000/tcp': [{'HostPort': env['CONTROL_PANEL_PORT']}],
             },
+            'RestartPolicy': {'Name': 'unless-stopped'},
+            'User': env['CONTROL_PANEL_LINUX_USER'],
         }
     )
     portainer_client.start_container(
