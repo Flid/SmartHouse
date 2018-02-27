@@ -97,17 +97,22 @@ class PortainerClient(BaseHTTPClient):
         )
         return response
 
-    def create_container(self, endpoint_id, image, tag, name=None):
+    def create_container(
+        self, endpoint_id, image, tag, name=None, request_data=None,
+    ):
         params = {}
 
         if name:
             params['name'] = name
 
+        data = {'Image': '{}:{}'.format(image, tag)}
+        data.update(request_data or {})
+
         response = self.call_docker_api(
             endpoint_id,
             'POST',
             'containers/create',
-            data={'Image': '{}:{}'.format(image, tag)},
+            data=data,
             params=params,
         )
         try:

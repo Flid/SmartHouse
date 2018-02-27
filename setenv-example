@@ -6,3 +6,7 @@ export DEBUG=false
 export PERSISTENT_DIR='/data'
 export DOCKERHUB_REPO=myrepo
 export LOG_LEVEL=DEBUG
+export POSTGRES_DBNAME_CONTROL_PANEL=snailshell_cp
+export POSTGRES_USER=snailshell
+export POSTGRES_PASSWORD=snailshellpass
+export POSTGRES_PORT=5432
