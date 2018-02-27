@@ -4,7 +4,7 @@ jobs:
     machine:
       enabled: true
 
-    working_directory: ~/smart_house
+    working_directory: ~/snailshell
 
     steps:
       - checkout
@@ -18,7 +18,8 @@ jobs:
       - run:
           name: Builing container
           command: |
-            docker build -t antonkir/deployer:$(git rev-parse HEAD) ./deployer
+            docker build -t antonkir/snailshell_control_panel .
       - deploy:
           command: |
-            docker push antonkir/deployer:$(git rev-parse HEAD)
+            docker tag antonkir/snailshell_control_panel antonkir/snailshell_control_panel:$(git rev-parse HEAD)
+            docker push antonkir/snailshell_control_panel

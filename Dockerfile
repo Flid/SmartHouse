@@ -1,4 +1,7 @@
-FROM arm32v7/python:3.6-slim
+# TODO new docker (1.17+) supports ARGs for FROM. For now it's hardcoded
+# Without this pre-building every build will be taking an hour on CircleCI.
+# They have docker layer caching, which is very faulty.
+FROM antonkir/snailshell_control_panel_requirements:latest
 MAINTAINER "Anton Kirilenko" <antony.kirilenko@gmail.com>
 
 ENV QEMU_EXECVE 1
@@ -13,11 +16,8 @@ RUN ["cross-build-start"]
 RUN groupadd -r $RUN_USER && useradd -r -g $RUN_USER $RUN_USER
 RUN mkdir -p $STATIC_ROOT && chown $RUN_USER:$RUN_USER $STATIC_ROOT -R
 
-RUN apt-get update && apt-get install -y gcc libffi-dev openssl-dev build-base
-
-# Requirements first, to allow for better Docker layer caching
-COPY requirements.txt $ROOT/requirements.txt
-RUN pip install -r $ROOT/requirements.txt
+# Requirements are installed in a parent image.
+# It takes very long time to build in QEMU, so we explicitely cache it this way.
 
 COPY . $ROOT
 WORKDIR $ROOT
