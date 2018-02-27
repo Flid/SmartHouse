@@ -11,19 +11,30 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 import environ
 import logging
-import os
 
 env = environ.Env()
 BASE_DIR = environ.Path(__file__) - 2
+
+CONTROL_PANEL_PORT = env.int('CONTROL_PANEL_PORT')
+CONTROL_PANEL_ADMIN_USER = env.str('CONTROL_PANEL_ADMIN_USER')
+CONTROL_PANEL_ADMIN_PASSWORD = env.str('CONTROL_PANEL_ADMIN_PASSWORD')
 
 PORTAINER_ADMIN_PASSWORD = env.str('PORTAINER_ADMIN_PASSWORD')
 PORTAINER_BASE_URL = env.str('PORTAINER_BASE_URL')
 PERSISTENT_DIR = env.str('PERSISTENT_DIR', '/data')
 LOG_LEVEL = env.str('LOG_LEVEL', 'INFO')
 STATIC_ROOT = env.str('STATIC_ROOT')
+
 POSTGRES_USER = env.str('POSTGRES_USER')
 POSTGRES_PASSWORD = env.str('POSTGRES_PASSWORD')
+POSTGRES_DB = env.str('POSTGRES_DB')
 POSTGRES_PORT = env.int('POSTGRES_PORT')
+
+RABBITMQ_USER = env.str('RABBITMQ_USER')
+RABBITMQ_PASSWORD = env.str('RABBITMQ_PASSWORD')
+RABBITMQ_PORT = env.int('RABBITMQ_PORT')
+
+MASTER_HOST = env.str('MASTER_HOST')
 
 SECRET_KEY = env.str('SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=False)
@@ -77,9 +88,13 @@ WSGI_APPLICATION = 'snailshell_cp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PERSISTENT_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': POSTGRES_DB,
+        'USER': POSTGRES_USER,
+        'PASSWORD': POSTGRES_PASSWORD,
+        'HOST': MASTER_HOST,
+        'PORT': POSTGRES_PORT,
+    },
 }
 
 

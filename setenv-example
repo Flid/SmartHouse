@@ -5,16 +5,18 @@ export PORTAINER_PORT='9000'
 
 # The address you will use for provisioning, should be accessible from your current machine
 # If you provision the master from a local network - it can match PORTAINER_LOCAL_BASE_URL
-export PORTAINER_EXTERNAL_HOST="http://10.20.30.40:$(PORTAINER_PORT)/api"
+export PORTAINER_EXTERNAL_HOST="http://10.20.30.40:$PORTAINER_PORT/api"
+
+export MASTER_HOST='192.168.0.41'
 
 # The address all containers will use inside a local network after provisioning.
-export PORTAINER_LOCAL_BASE_URL="http://192.168.0.111:$(PORTAINER_PORT)/api"
+export PORTAINER_LOCAL_BASE_URL="http://$MASTER_HOST:$PORTAINER_PORT/api"
 
 export SECRET_KEY='mmmm...so secret'
 
 export POSTGRES_PASSWORD='snailshellpass'
 export RABBITMQ_PASSWORD='snailshellpass'
-export CONTROL_PANEL_PASSWORD='snailshellpass'
+export CONTROL_PANEL_ADMIN_PASSWORD='snailshellpass'
 export PORTAINER_ADMIN_PASSWORD='snailshellpass'
 
 # ========================================================================= #
@@ -27,6 +29,8 @@ export CONTROL_PANEL_CONTAINER_NAME='ss_control_panel'
 export CONTROL_PANEL_IMAGE_NAME='antonkir/snailshell_control_panel'
 export CONTROL_PANEL_IMAGE_TAG='latest'
 export CONTROL_PANEL_USER='snailshell'
+export CONTROL_PANEL_PORT='9001'
+export CONTROL_PANEL_ADMIN_USER='snailshell'
 
 export PORTAINER_LOCAL_ENDPOINT_NAME='local'
 export PORTAINER_DOCKER_CONTAINER_NAME='portainer_controller'

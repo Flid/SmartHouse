@@ -27,25 +27,25 @@ class PortainerClient(BaseHTTPClient):
             **kwargs
         )
 
-    def init_admin(self, password):
+    def init_admin(self, login, password):
         self._perform_request(
             'POST',
             'users/admin/init',
             with_auth=False,
             json={
-                'Username': 'admin',
+                'Username': login,
                 'Password': password,
             },
         )
 
-    def authenticate(self, password):
+    def authenticate(self, login, password):
         # TODO re-auth needed every 8 hours
         response = self._perform_request(
             'POST',
             'auth',
             with_auth=False,
             json={
-                'Username': 'admin',
+                'Username': login,
                 'Password': password,
             },
         )

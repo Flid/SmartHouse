@@ -13,6 +13,27 @@ NOTES: even though it's quite easy to do a multi-master setup for
 
 Sets up a Portainer (Docker control panel), deployer script (gives an interface to pull and start containers)
 
+
+## How master provisioning works
+
+You pick one machine to be Master, it will have [Portainer](https://github.com/portainer/portainer),
+PostgreSQL, RabbitMQ and Control Panel on it.
+
+You need a machine with Ubuntu. Tested on 16.04.
+
+The steps provisioning performs:
+* Connect to `root@$MASTER_HOST:26` via SSH.
+* Install some Ubuntu packages, including Docker
+* Stop and delete all existing containers, if any.
+* Install and configure Portainer.
+Admin login is `$PORTAINER_ADMIN_USER`, password is `$PORTAINER_ADMIN_PASSWORD`.
+* Setting up PostgreSQL
+* Setting up RabbitMQ with management console. You can find it on `http://$MASTER_HOST:$RABBITMQ_MANAGEMENT_PORT`.
+Login is `$RABBITMQ_USER`, password is `$RABBITMQ_PASSWORD`
+* Setting up Control Panel - django admin panel to control nodes,
+which also has an API to automate deploys. It starts on `$MASTER_HOST:$CONTROL_PANEL_PORT`
+
+
 ## Installation
 
 * Set up master controller node:
@@ -28,7 +49,11 @@ and provision the master node. Define one host to ssh to,
 user needs to have root access.
 
 ```
+. ./setenv-mynode
 pip install -r requirements.txt
 
-fab provision_master_node --hosts 'root@192.168.0.10:22'
+fab provision_master_node -H root@$MASTER_HOST:26
 ```
+
+In a few minutes the process will finish.
+

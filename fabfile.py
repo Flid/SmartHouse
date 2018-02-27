@@ -13,10 +13,14 @@ def load_env():
         'DOCKER_LOCAL_SOCKET_PATH',
         'DEBUG',
         'LOG_LEVEL',
+        'MASTER_HOST',
 
         'CONTROL_PANEL_CONTAINER_NAME',
         'CONTROL_PANEL_IMAGE_NAME',
         'CONTROL_PANEL_IMAGE_TAG',
+        'CONTROL_PANEL_PORT',
+        'CONTROL_PANEL_ADMIN_USER',
+        'CONTROL_PANEL_ADMIN_PASSWORD',
 
         'PORTAINER_LOCAL_ENDPOINT_NAME',
         'PORTAINER_LOCAL_ENDPOINT_ID',
@@ -24,6 +28,7 @@ def load_env():
         'PORTAINER_IMAGE_NAME',
         'PORTAINER_IMAGE_TAG',
         'PORTAINER_PORT',
+        'PORTAINER_ADMIN_USER',
         'PORTAINER_ADMIN_PASSWORD',
         'PORTAINER_EXTERNAL_HOST',
         'PORTAINER_LOCAL_BASE_URL',
@@ -43,9 +48,6 @@ def load_env():
         'RABBITMQ_IMAGE_TAG',
         'RABBITMQ_USER',
         'RABBITMQ_PASSWORD',
-
-
-
     ]
 
     output = {}
@@ -67,7 +69,7 @@ def load_env():
 
 def copy_configs(env, keys_map):
     return [
-        f'{key_to}="{env[key_from]}"'
+        f'{key_to}={env[key_from]}'
         for key_to, key_from in keys_map.items()
     ]
 
@@ -85,16 +87,29 @@ def provision_master_node():
     # Stop and remove all containers
     run('docker stop $(docker ps -a -q)')
     run('docker rm $(docker ps -a -q)')
-
     run('rm -rf /opt/portainer/')
-    start_portainer(env)
+
+    run(  # start Portainer
+        f'docker run -d '
+        f'-p {env["PORTAINER_PORT"]}:9000 --restart always '
+        f'-v /var/run/docker.sock:/var/run/docker.sock '
+        f'-v /opt/portainer:/data '
+        f'--name {env["PORTAINER_DOCKER_CONTAINER_NAME"]} '
+        f'{env["PORTAINER_IMAGE_NAME"]}:{env["PORTAINER_IMAGE_TAG"]}'
+    )
 
     sleep(2)  # TODO
 
     logger.info('Initializing ')
     portainer_client = PortainerClient(env['PORTAINER_EXTERNAL_HOST'])
-    portainer_client.init_admin(env['PORTAINER_ADMIN_PASSWORD'])
-    portainer_client.authenticate(env['PORTAINER_ADMIN_PASSWORD'])
+    portainer_client.init_admin(
+        env['PORTAINER_ADMIN_USER'],
+        env['PORTAINER_ADMIN_PASSWORD'],
+    )
+    portainer_client.authenticate(
+        env['PORTAINER_ADMIN_USER'],
+        env['PORTAINER_ADMIN_PASSWORD'],
+    )
     portainer_client.add_endpoint(
         env['PORTAINER_LOCAL_ENDPOINT_NAME'],
         env['DOCKER_LOCAL_SOCKET_PATH'],
@@ -173,26 +188,26 @@ def provision_master_node():
                 'POSTGRES_PASSWORD': 'POSTGRES_PASSWORD',
                 'POSTGRES_PORT': 'POSTGRES_PORT',
                 'POSTGRES_DB': 'POSTGRES_DBNAME_CONTROL_PANEL',
+                'RABBITMQ_USER': 'RABBITMQ_USER',
+                'RABBITMQ_PASSWORD': 'RABBITMQ_PASSWORD',
+                'RABBITMQ_PORT': 'RABBITMQ_PORT',
+                'PORTAINER_ADMIN_USER': 'PORTAINER_ADMIN_USER',
                 'PORTAINER_ADMIN_PASSWORD': 'PORTAINER_ADMIN_PASSWORD',
                 'PORTAINER_BASE_URL': 'PORTAINER_LOCAL_BASE_URL',
                 'LOG_LEVEL': 'LOG_LEVEL',
                 'SECRET_KEY': 'SECRET_KEY',
                 'DEBUG': 'DEBUG',
+                'MASTER_HOST': 'MASTER_HOST',
+                'CONTROL_PANEL_ADMIN_USER': 'CONTROL_PANEL_ADMIN_USER',
+                'CONTROL_PANEL_ADMIN_PASSWORD': 'CONTROL_PANEL_ADMIN_PASSWORD',
+                'CONTROL_PANEL_PORT': 'CONTROL_PANEL_PORT',
             }),
+            'PortBindings': {
+                f'8000/tcp': [{'HostPort': env['CONTROL_PANEL_PORT']}],
+            },
         }
     )
     portainer_client.start_container(
         env['PORTAINER_LOCAL_ENDPOINT_ID'],
         env['CONTROL_PANEL_CONTAINER_NAME'],
-    )
-
-
-def start_portainer(env):
-    run(
-        f'docker run -d '
-        f'-p {env["PORTAINER_PORT"]}:9000 --restart always '
-        f'-v /var/run/docker.sock:/var/run/docker.sock '
-        f'-v /opt/portainer:/data '
-        f'--name {env["PORTAINER_DOCKER_CONTAINER_NAME"]} '
-        f'{env["PORTAINER_IMAGE_NAME"]}:{env["PORTAINER_IMAGE_TAG"]}'
     )
