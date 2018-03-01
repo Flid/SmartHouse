@@ -4,7 +4,7 @@ python manage.py collectstatic --noinput
 
 python manage.py migrate --noinput
 
-python manage.py create_default_admin
+python manage.py initialize
 
 if [ "$(echo "$DEBUG" | awk '{print tolower($0)}')" =  "true" ]
 then

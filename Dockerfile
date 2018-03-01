@@ -13,7 +13,7 @@ COPY qemu/cross-build-end qemu/cross-build-start qemu/qemu-arm-static qemu/sh-sh
 RUN ["cross-build-start"]
 
 # Create the user that will run the app
-RUN groupadd -r $RUN_USER && useradd -r -g $RUN_USER $RUN_USER
+RUN groupadd $RUN_USER && useradd -m -g $RUN_USER $RUN_USER
 RUN mkdir -p $STATIC_ROOT && chown $RUN_USER:$RUN_USER $STATIC_ROOT -R
 
 # Requirements are installed in a parent image.

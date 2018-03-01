@@ -31,8 +31,8 @@ Admin login is `$PORTAINER_ADMIN_USER`, password is `$PORTAINER_ADMIN_PASSWORD`.
 * Setting up RabbitMQ with management console. You can find it on `http://$MASTER_HOST:$RABBITMQ_MANAGEMENT_PORT`.
 Login is `$RABBITMQ_USER`, password is `$RABBITMQ_PASSWORD`
 * Setting up Control Panel - django admin panel to control nodes,
-which also has an API to automate deploys. It starts on `$MASTER_HOST:$CONTROL_PANEL_PORT`
-
+which also has an API to automate deploys. It starts on `$MASTER_HOST:$CONTROL_PANEL_PORT`.
+Admin login is `$CONTROL_PANEL_ADMIN_USER`, password is `$CONTROL_PANEL_ADMIN_PASSWORD`
 
 ## Installation
 
@@ -52,8 +52,8 @@ user needs to have root access.
 . ./setenv-mynode
 pip install -r requirements.txt
 
-fab provision_master_node -H root@$MASTER_HOST:26
+fab provision_master_node -H root@$MASTER_HOST:22
 ```
 
-In a few minutes the process will finish.
+The process will finish in a few minutes.
 

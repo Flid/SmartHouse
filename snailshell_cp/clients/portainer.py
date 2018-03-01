@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+
 from .base import BaseHTTPClient, BaseHTTPClientError
 import json
 from django.conf import settings
@@ -30,7 +32,7 @@ class PortainerClient(BaseHTTPClient):
     def init_admin(self, login, password):
         self._perform_request(
             'POST',
-            'users/admin/init',
+            'api/users/admin/init',
             with_auth=False,
             json={
                 'Username': login,
@@ -42,7 +44,7 @@ class PortainerClient(BaseHTTPClient):
         # TODO re-auth needed every 8 hours
         response = self._perform_request(
             'POST',
-            'auth',
+            'api/auth',
             with_auth=False,
             json={
                 'Username': login,
@@ -52,7 +54,7 @@ class PortainerClient(BaseHTTPClient):
         self._auth_token = response.json()['jwt']
 
     def call_docker_api(self, endpoint_id, method, path, params=None, data=None):
-        full_path = 'endpoints/{}/docker/{}'.format(
+        full_path = 'api/endpoints/{}/docker/{}'.format(
             endpoint_id,
             path.lstrip('/'),
         )
@@ -131,10 +133,13 @@ class PortainerClient(BaseHTTPClient):
     def add_endpoint(self, name, url):
         response = self._perform_request(
             'POST',
-            'endpoints',
+            'api/endpoints',
             json={
                 'Name': name,
                 'URL': url,
             },
         )
         return response.json()
+
+    def get_external_link_for_endpoint(self, endpoint_id):
+        return urljoin(self.base_url, f'#/endpoints/{endpoint_id}')

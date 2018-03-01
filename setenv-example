@@ -1,22 +1,21 @@
 # ========================================================================= #
 # Things you have to edit before you can proceed:
 # ========================================================================= #
+export PORTAINER_PORT='10000'
+export MASTER_HOST='192.168.0.41'
 
 # The address you will use for provisioning, should be accessible from your current machine
 # If you provision the master from a local network - it can match PORTAINER_LOCAL_BASE_URL
-export PORTAINER_EXTERNAL_HOST="http://10.20.30.40:$PORTAINER_PORT/api"
-
-export MASTER_HOST='192.168.0.41'
+export PORTAINER_EXTERNAL_URL="http://example.com:$PORTAINER_PORT"
 
 # The address all containers will use inside a local network after provisioning.
-export PORTAINER_LOCAL_BASE_URL="http://$MASTER_HOST:$PORTAINER_PORT/api"
+export PORTAINER_INTERNAL_URL="http://$MASTER_HOST:$PORTAINER_PORT"
 
 export SECRET_KEY='mmmm...so secret'
 
-export POSTGRES_PASSWORD='snailshellpass'
-export RABBITMQ_PASSWORD='snailshellpass'
-export CONTROL_PANEL_ADMIN_PASSWORD='snailshellpass'
-export PORTAINER_ADMIN_PASSWORD='snailshellpass'
+# This name will be used for all services set up.
+export DEFAULT_USERNAME='snailshell'
+export DEFAULT_PASSWORD='snailshellpass'
 
 # ========================================================================= #
 # Things you might want to customize, but it will work with the default settings
@@ -27,31 +26,32 @@ export LOG_LEVEL=DEBUG
 export CONTROL_PANEL_CONTAINER_NAME='ss_control_panel'
 export CONTROL_PANEL_IMAGE_NAME='antonkir/snailshell_control_panel'
 export CONTROL_PANEL_IMAGE_TAG='latest'
-export CONTROL_PANEL_USER='snailshell'
 export CONTROL_PANEL_PORT='10001'
-export CONTROL_PANEL_ADMIN_USER='snailshell'
+export CONTROL_PANEL_ADMIN_USER=$DEFAULT_USERNAME
+export CONTROL_PANEL_ADMIN_PASSWORD=$DEFAULT_PASSWORD
 
+export PORTAINER_ADMIN_USER=$DEFAULT_USERNAME
+export PORTAINER_ADMIN_PASSWORD=$DEFAULT_PASSWORD
 export PORTAINER_LOCAL_ENDPOINT_NAME='local'
 export PORTAINER_DOCKER_CONTAINER_NAME='portainer_controller'
 export PORTAINER_IMAGE_NAME='portainer/portainer'
 export PORTAINER_IMAGE_TAG='latest'
-export PORTAINER_PORT='10000'
 
 export POSTGRES_IMAGE_NAME='postgres'
 export POSTGRES_IMAGE_TAG='latest'
 export POSTGRES_CONTAINER_NAME='postgres_main'
 export POSTGRES_DBNAME_CONTROL_PANEL='snailshell_cp'
-export POSTGRES_USER='snailshell'
-# External port to access the DB
+export POSTGRES_USER=$DEFAULT_USERNAME
+export POSTGRES_PASSWORD=$DEFAULT_PASSWORD
 export POSTGRES_PORT='5432'
 
 export RABBITMQ_IMAGE_NAME='rabbitmq'
 export RABBITMQ_IMAGE_TAG='3-management'
 export RABBITMQ_CONTAINER_NAME='rabbitmq_main'
-# External port to access RabbitMQ
 export RABBITMQ_PORT='5672'
 export RABBITMQ_MANAGEMENT_PORT='10002'
-export RABBITMQ_USER='snailshell'
+export RABBITMQ_USER=$DEFAULT_USERNAME
+export RABBITMQ_PASSWORD=$DEFAULT_PASSWORD
 
 # ========================================================================= #
 # Things you should not touch really, it will break everything.
