@@ -62,7 +62,8 @@ export DOCKERD_API_PORT='9999'
 export CMD_UNINSTALL_DOCKER='apt purge -y docker docker.io docker-ce docker-engine || true'
 
 export CMD_INSTALL_DOCKER='curl -fsSL get.docker.com -o /tmp/docker-install.sh && VERSION='18.02.0-ce' sh /tmp/docker-install.sh'
-
+export CMD_DOCKER_EXTERNAL_IP='sed -i.bak -e "s/ExecStart=.*/ExecStart=\/usr\/bin\/dockerd -H fd:\/\/ -H tcp:\/\/0.0.0.0:{port}/" /lib/systemd/system/docker.service'
+export CMD_DOCKER_RESTART='systemctl daemon-reload && systemctl restart docker'
 # ========================================================================= #
 # Things you should not touch really, it will break everything.
 # Unless you really know what you are doing.

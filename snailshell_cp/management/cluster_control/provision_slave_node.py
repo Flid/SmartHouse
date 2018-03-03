@@ -19,12 +19,8 @@ def provision_slave_node(*, name, hostname):
 
     reset_docker()
 
-    has_opts = sudo('grep -E "^DOCKER_OPTS" /etc/default/docker || true')
-
-    if not has_opts:
-        sudo(f'echo "DOCKER_OPTS=\'-H tcp://0.0.0.0:{settings.DOCKERD_API_PORT}\'" >> /etc/default/docker ')
-        sudo('systemctl restart docker')
-        sleep(1)  # TODO
+    sudo(settings.CMD_DOCKER_EXTERNAL_IP.format(port=settings.DOCKERD_API_PORT))
+    sudo(settings.CMD_DOCKER_RESTART)
 
     portainer_client = PortainerClient(settings.PORTAINER_INTERNAL_URL)
     portainer_client.authenticate(
