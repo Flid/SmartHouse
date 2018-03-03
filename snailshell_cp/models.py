@@ -2,7 +2,6 @@ from django.db import models
 
 
 class Node(models.Model):
-    id = models.IntegerField(db_index=True, primary_key=True)
     name = models.CharField(db_index=True, max_length=255)
 
     login = models.CharField(max_length=255)

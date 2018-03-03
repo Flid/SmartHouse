@@ -37,30 +37,33 @@ class NodeCreateForm(forms.ModelForm):
         exclude = ['id']
 
     def clean(self):
-        super().clean()
+        cleaned_data = super().clean()
 
         host_string = build_host_string(
-            login=self.cleaned_data['login'],
-            host=self.cleaned_data['host'],
-            port=self.cleaned_data['port'],
+            login=cleaned_data['login'],
+            host=cleaned_data['host'],
+            port=cleaned_data['port'],
         )
 
         try:
             add_ssh_host(
-                password=self.cleaned_data['password'],
-                host=self.cleaned_data['host'],
-                port=self.cleaned_data['port'],
+                login=cleaned_data['login'],
+                password=cleaned_data['password'],
+                host=cleaned_data['host'],
+                port=cleaned_data['port'],
             )
+            # Configure docker on the remote machine
+            # and add an entrypoint to Portainer
             execute(
                 provision_slave_node,
-                name=self.cleaned_data['name'],
+                name=cleaned_data['name'],
                 host=host_string,
-                hostname=self.cleaned_data['host'],
+                hostname=cleaned_data['host'],
             )
         except BaseClusterControlException as exc:
             raise forms.ValidationError(str(exc))
 
-        raise forms.ValidationError('!!!')
+        return cleaned_data
 
 
 class NodeAdmin(admin.ModelAdmin):

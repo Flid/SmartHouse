@@ -1,4 +1,6 @@
 from fabric.api import sudo, run
+
+from snailshell_cp.management.cluster_control.utils import reset_docker
 from .base import cp_task, copy_configs
 from time import sleep
 import logging
@@ -19,6 +21,7 @@ def load_env():
         'DEBUG',
         'LOG_LEVEL',
         'MASTER_HOST',
+        'DOCKERD_API_PORT',
 
         'CONTROL_PANEL_CONTAINER_NAME',
         'CONTROL_PANEL_IMAGE_NAME',
@@ -38,7 +41,6 @@ def load_env():
         'PORTAINER_ADMIN_PASSWORD',
         'PORTAINER_EXTERNAL_URL',
         'PORTAINER_INTERNAL_URL',
-        'PORTAINER_LOCAL_BASE_URL',
 
         'POSTGRES_IMAGE_NAME',
         'POSTGRES_IMAGE_TAG',
@@ -81,14 +83,8 @@ def provision_master_node():
     WARNING: it wipes out everything, all unsaved data will be lost.
     """
     env = load_env()
+    reset_docker()
 
-    sudo('apt update')
-    sudo('apt install lxc aufs-tools cgroup-lite apparmor docker.io curl python3')
-
-    # Stop and remove all containers/images/volumes
-    sudo('docker stop $(docker ps -a -q)')
-    sudo('docker rm $(docker ps -a -q)')
-    sudo('docker volume rm $(sudo docker volume ls --format "{{.Name}}")')
     sudo('rm -rf /opt/portainer/')
 
     sudo(  # start Portainer
@@ -200,18 +196,18 @@ def provision_master_node():
                 'RABBITMQ_PORT': 'RABBITMQ_PORT',
                 'PORTAINER_ADMIN_USER': 'PORTAINER_ADMIN_USER',
                 'PORTAINER_ADMIN_PASSWORD': 'PORTAINER_ADMIN_PASSWORD',
-                'PORTAINER_BASE_URL': 'PORTAINER_LOCAL_BASE_URL',
+                'PORTAINER_EXTERNAL_URL': 'PORTAINER_EXTERNAL_URL',
+                'PORTAINER_INTERNAL_URL': 'PORTAINER_INTERNAL_URL',
                 'LOG_LEVEL': 'LOG_LEVEL',
                 'SECRET_KEY': 'SECRET_KEY',
                 'DEBUG': 'DEBUG',
                 'MASTER_HOST': 'MASTER_HOST',
+                'DOCKERD_API_PORT': 'DOCKERD_API_PORT',
                 'CONTROL_PANEL_ADMIN_USER': 'CONTROL_PANEL_ADMIN_USER',
                 'CONTROL_PANEL_ADMIN_PASSWORD': 'CONTROL_PANEL_ADMIN_PASSWORD',
                 'CONTROL_PANEL_PORT': 'CONTROL_PANEL_PORT',
                 'PORTAINER_LOCAL_ENDPOINT_NAME': 'PORTAINER_LOCAL_ENDPOINT_NAME',
                 'PORTAINER_LOCAL_ENDPOINT_ID': 'PORTAINER_LOCAL_ENDPOINT_ID',
-                'PORTAINER_EXTERNAL_URL': 'PORTAINER_EXTERNAL_URL',
-                'PORTAINER_INTERNAL_URL': 'PORTAINER_INTERNAL_URL',
             }),
             'PortBindings': {
                 f'8000/tcp': [{'HostPort': env['CONTROL_PANEL_PORT']}],

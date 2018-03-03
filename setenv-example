@@ -53,6 +53,10 @@ export RABBITMQ_MANAGEMENT_PORT='10002'
 export RABBITMQ_USER=$DEFAULT_USERNAME
 export RABBITMQ_PASSWORD=$DEFAULT_PASSWORD
 
+# Slaves will use this port to expose Docker Daemon API.
+# Make sure it's not accessible from the Internet!
+export DOCKERD_API_PORT='9999'
+
 # ========================================================================= #
 # Things you should not touch really, it will break everything.
 # Unless you really know what you are doing.

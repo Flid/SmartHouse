@@ -1,4 +1,4 @@
-from fabric.api import local
+from fabric.api import local, sudo
 import os
 import logging
 from .base import cp_task
@@ -19,5 +19,19 @@ def generate_local_ssh_key():
 
 
 @cp_task
-def add_ssh_host(*, host, port, password):
-    local(f'sshpass -f {password} ssh-copy-id {host} -p {port}')
+def add_ssh_host(*, host, port, login, password):
+    # TODO can be insecure. Copy the password to a local file
+    # with o+r permissions and use the file with `-f` option.
+    local(f'sshpass -p {password} ssh-copy-id {login}@{host} -p {port}')
+
+
+def reset_docker():
+    sudo('apt update')
+    sudo('apt install -y lxc aufs-tools docker.io')
+
+    # Stop and remove all containers/images
+    containers_running = sudo('docker ps -a -q')
+
+    if containers_running:
+        sudo(f'docker stop {containers_running}')
+        sudo(f'docker rm {containers_running}')
