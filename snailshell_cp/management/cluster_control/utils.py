@@ -33,5 +33,6 @@ def reset_docker():
     containers_running = sudo('docker ps -a -q')
 
     if containers_running:
+        containers_running = ' '.join(containers_running.split())
         sudo(f'docker stop {containers_running}')
         sudo(f'docker rm {containers_running}')

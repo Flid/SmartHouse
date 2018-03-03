@@ -1,6 +1,7 @@
-from fabric.api import settings, task
+from fabric.api import settings as fab_settings, task
 from contextlib import wraps
 from fabric.exceptions import NetworkError
+from django.conf import settings
 
 
 class BaseClusterControlException(Exception):
@@ -23,7 +24,7 @@ def cp_task(func):
     @task
     @wraps(func)
     def _runner(*args, **kwargs):
-        with settings(abort_exception=CommandRunError):
+        with fab_settings(abort_exception=CommandRunError):
             try:
                 return func(*args, **kwargs)
             except NetworkError as exc:
@@ -32,9 +33,9 @@ def cp_task(func):
     return _runner
 
 
-def copy_configs(env, keys_map):
+def copy_configs(keys_map):
     return [
-        f'{key_to}={env[key_from]}'
+        f'{key_to}={getattr(settings, key_from)}'
         for key_to, key_from in keys_map.items()
     ]
 

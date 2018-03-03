@@ -54,16 +54,22 @@ class NodeCreateForm(forms.ModelForm):
             )
             # Configure docker on the remote machine
             # and add an entrypoint to Portainer
-            execute(
+            response = execute(
                 provision_slave_node,
                 name=cleaned_data['name'],
                 host=host_string,
                 hostname=cleaned_data['host'],
             )
+
         except BaseClusterControlException as exc:
             raise forms.ValidationError(str(exc))
 
+        self._obj_id = response[host_string]['entrypoint_id']
         return cleaned_data
+
+    def save(self, *args, **kwargs):
+        self.instance.id = self._obj_id
+        return super().save(*args, **kwargs)
 
 
 class NodeAdmin(admin.ModelAdmin):

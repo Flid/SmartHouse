@@ -57,6 +57,12 @@ export RABBITMQ_PASSWORD=$DEFAULT_PASSWORD
 # Make sure it's not accessible from the Internet!
 export DOCKERD_API_PORT='9999'
 
+# Completely uninstall docker with all configs before continuing.
+# We are going to install it with a special script, which can conflict with repo installation.
+export CMD_UNINSTALL_DOCKER='apt purge docker.io || true'
+
+export CMD_INSTALL_DOCKER='wget -qO- https://get.docker.com/ | sed "s/lxc-docker/lxc-docker-1.13.1/" | sh'
+
 # ========================================================================= #
 # Things you should not touch really, it will break everything.
 # Unless you really know what you are doing.

@@ -32,7 +32,8 @@ def provision_slave_node(*, name, hostname):
         settings.PORTAINER_ADMIN_PASSWORD,
     )
 
-    portainer_client.add_endpoint(
+    response = portainer_client.add_endpoint(
         name,
         f'tcp://{hostname}:{settings.DOCKERD_API_PORT}',
     )
+    return {'entrypoint_id': response['Id']}
