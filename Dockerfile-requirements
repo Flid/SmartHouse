@@ -7,6 +7,8 @@ COPY qemu/cross-build-end qemu/cross-build-start qemu/qemu-arm-static qemu/sh-sh
 
 RUN ["cross-build-start"]
 
+RUN apt update && apt install -y sshpass
+
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install -r /tmp/requirements.txt --no-cache-dir
 

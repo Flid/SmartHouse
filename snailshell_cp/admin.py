@@ -6,6 +6,7 @@ from django.core.exceptions import MultipleObjectsReturned
 from fabric.api import execute
 from snailshell_cp.clients.portainer import PortainerClient
 from snailshell_cp.management.cluster_control.base import build_host_string
+from snailshell_cp.management.cluster_control.utils import add_ssh_host
 from snailshell_cp.models import Node
 from django.utils.safestring import mark_safe
 from snailshell_cp.management.cluster_control import provision_slave_node
@@ -45,11 +46,16 @@ class NodeCreateForm(forms.ModelForm):
         )
 
         try:
+            add_ssh_host(
+                password=self.cleaned_data['password'],
+                host=self.cleaned_data['host'],
+                port=self.cleaned_data['port'],
+            )
             execute(
                 provision_slave_node,
-                password=self.cleaned_data['password'],
                 name=self.cleaned_data['name'],
                 host=host_string,
+                hostname=self.cleaned_data['host'],
             )
         except BaseClusterControlException as exc:
             raise forms.ValidationError(str(exc))

@@ -1,4 +1,4 @@
-from fabric.api import sudo
+from fabric.api import sudo, run
 from .base import cp_task, copy_configs
 from time import sleep
 import logging
@@ -176,6 +176,9 @@ def provision_master_node():
     )
 
     # Control panel
+    # homedir = str(run('echo $HOME'))
+    # sshdir = os.path.join(homedir, '.ssh')
+
     portainer_client.create_image(
         env['PORTAINER_LOCAL_ENDPOINT_ID'],
         env['CONTROL_PANEL_IMAGE_NAME'],
@@ -213,10 +216,18 @@ def provision_master_node():
             'PortBindings': {
                 f'8000/tcp': [{'HostPort': env['CONTROL_PANEL_PORT']}],
             },
+            # TODO In future we might want to share host ssh key
+            # 'Volumes': {'/ssh-conf/': {}},
+            # 'HostConfig': {
+            #     'Binds': [
+            #         f'{sshdir}:/ssh-conf/',
+            #     ],
+            # },
             'RestartPolicy': {'Name': 'unless-stopped'},
             'User': env['CONTROL_PANEL_LINUX_USER'],
         }
     )
+
     portainer_client.start_container(
         env['PORTAINER_LOCAL_ENDPOINT_ID'],
         env['CONTROL_PANEL_CONTAINER_NAME'],

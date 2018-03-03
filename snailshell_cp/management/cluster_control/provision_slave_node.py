@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 @cp_task
-def provision_slave_node(*, password, name):
+def provision_slave_node(*, name, hostname):
     """
     Connect to a slave node, setup Docker and connect it to the cluster.
     """

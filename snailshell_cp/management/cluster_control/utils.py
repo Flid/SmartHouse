@@ -15,4 +15,9 @@ def generate_local_ssh_key():
         logger.info('Shh key already exists - skipping.')
         return
 
-    local('ssh-keygen -t rsa')
+    local('ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa')
+
+
+@cp_task
+def add_ssh_host(*, host, port, password):
+    local(f'sshpass -f {password} ssh-copy-id {host} -p {port}')
