@@ -2,6 +2,7 @@ from fabric.api import local, sudo
 import os
 import logging
 from .base import cp_task
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -9,7 +10,7 @@ logger = logging.getLogger(__name__)
 @cp_task
 def generate_local_ssh_key():
     ssh_root = os.path.expanduser('~/.ssh/')
-    os.makedirs(ssh_root, mode=0o660, exist_ok=True)
+    os.makedirs(ssh_root, mode=0o770, exist_ok=True)
 
     if os.path.exists(os.path.join(ssh_root, 'id_rsa')):
         logger.info('Shh key already exists - skipping.')
@@ -26,8 +27,8 @@ def add_ssh_host(*, host, port, login, password):
 
 
 def reset_docker():
-    sudo('apt update')
-    sudo('apt install -y lxc aufs-tools docker.io')
+    sudo(settings.CMD_UNINSTALL_DOCKER)
+    sudo(settings.CMD_INSTALL_DOCKER)
 
     # Stop and remove all containers/images
     containers_running = sudo('docker ps -a -q')

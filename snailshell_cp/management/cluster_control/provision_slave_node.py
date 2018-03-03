@@ -19,7 +19,7 @@ def provision_slave_node(*, name, hostname):
 
     reset_docker()
 
-    has_opts = sudo('grep -E "^DOCKER_OPTS" /etc/default/docker')
+    has_opts = sudo('grep -E "^DOCKER_OPTS" /etc/default/docker || true')
 
     if not has_opts:
         sudo(f'echo "DOCKER_OPTS=\'-H tcp://0.0.0.0:{settings.DOCKERD_API_PORT}\'" >> /etc/default/docker ')
