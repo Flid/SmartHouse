@@ -1,7 +1,7 @@
 from fabric.api import sudo, run
 
 from snailshell_cp.management.cluster_control.utils import reset_docker
-from .base import cp_task, copy_configs
+from .base import cp_task, copy_configs, get_all_settings_keys
 from time import sleep
 import logging
 from django.conf import settings
@@ -120,27 +120,7 @@ def provision_master_node():
         name=settings.CONTROL_PANEL_CONTAINER_NAME,
         request_data={
             'Env': copy_configs({
-                'POSTGRES_USER': 'POSTGRES_USER',
-                'POSTGRES_PASSWORD': 'POSTGRES_PASSWORD',
-                'POSTGRES_PORT': 'POSTGRES_PORT',
-                'POSTGRES_DB': 'POSTGRES_DBNAME_CONTROL_PANEL',
-                'RABBITMQ_USER': 'RABBITMQ_USER',
-                'RABBITMQ_PASSWORD': 'RABBITMQ_PASSWORD',
-                'RABBITMQ_PORT': 'RABBITMQ_PORT',
-                'PORTAINER_ADMIN_USER': 'PORTAINER_ADMIN_USER',
-                'PORTAINER_ADMIN_PASSWORD': 'PORTAINER_ADMIN_PASSWORD',
-                'PORTAINER_EXTERNAL_URL': 'PORTAINER_EXTERNAL_URL',
-                'PORTAINER_INTERNAL_URL': 'PORTAINER_INTERNAL_URL',
-                'LOG_LEVEL': 'LOG_LEVEL',
-                'SECRET_KEY': 'SECRET_KEY',
-                'DEBUG': 'DEBUG',
-                'MASTER_HOST': 'MASTER_HOST',
-                'DOCKERD_API_PORT': 'DOCKERD_API_PORT',
-                'CONTROL_PANEL_ADMIN_USER': 'CONTROL_PANEL_ADMIN_USER',
-                'CONTROL_PANEL_ADMIN_PASSWORD': 'CONTROL_PANEL_ADMIN_PASSWORD',
-                'CONTROL_PANEL_PORT': 'CONTROL_PANEL_PORT',
-                'PORTAINER_LOCAL_ENDPOINT_NAME': 'PORTAINER_LOCAL_ENDPOINT_NAME',
-                'PORTAINER_LOCAL_ENDPOINT_ID': 'PORTAINER_LOCAL_ENDPOINT_ID',
+                key: key for key in get_all_settings_keys()
             }),
             'PortBindings': {
                 f'8000/tcp': [{'HostPort': str(settings.CONTROL_PANEL_PORT)}],

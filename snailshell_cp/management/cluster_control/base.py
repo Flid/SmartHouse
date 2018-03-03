@@ -40,5 +40,17 @@ def copy_configs(keys_map):
     ]
 
 
+def get_all_settings_keys():
+    output = []
+
+    for key in dir(settings):
+        value = getattr(settings, key)
+
+        if isinstance(value, (str, int)):
+            output.append(key)
+
+    return output
+
+
 def build_host_string(login, host, port):
     return f'{login}@{host}:{port}'
