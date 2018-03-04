@@ -14,6 +14,18 @@ class PortainerClient(BaseHTTPClient):
         super().__init__(*args, **kwargs)
         self._auth_token = None
 
+    @classmethod
+    def get_internal_client(cls, auth=True):
+        client = cls(settings.PORTAINER_INTERNAL_URL)
+
+        if auth:
+            client.authenticate(
+                settings.PORTAINER_ADMIN_USER,
+                settings.PORTAINER_ADMIN_PASSWORD,
+            )
+
+        return client
+
     def _perform_request(self, method, path, with_auth=True, **kwargs):
         headers = kwargs.pop('headers', {})
         if with_auth:
@@ -140,6 +152,12 @@ class PortainerClient(BaseHTTPClient):
             },
         )
         return response.json()
+
+    def remove_endpoint(self, endpoint_id):
+        response = self._perform_request(
+            'DELETE',
+            f'api/endpoints/{endpoint_id}',
+        )
 
     def get_external_link_for_endpoint(self, endpoint_id):
         return urljoin(self.base_url, f'#/endpoints/{endpoint_id}')

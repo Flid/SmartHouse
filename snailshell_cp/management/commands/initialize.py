@@ -1,7 +1,9 @@
+from uuid import uuid4
+
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from snailshell_cp.models import Node
+from snailshell_cp.models import Node, PERMISSION_DEPLOY, AccessKey
 from fabric.api import execute
 from snailshell_cp.management.cluster_control.utils import generate_local_ssh_key
 
@@ -37,5 +39,10 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f'Successfully created Node {node}',
         ))
+
+        AccessKey.objects.create(
+            permissions=PERMISSION_DEPLOY,
+            value=uuid4().hex,
+        )
 
         generate_local_ssh_key()

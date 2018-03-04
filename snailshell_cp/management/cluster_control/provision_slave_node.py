@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 def provision_slave_node(*, name, hostname):
     """
     Connect to a slave node, setup Docker and connect it to the cluster.
+    Returns an ID of a newly created endpoint.
     """
 
     reset_docker()
@@ -22,12 +23,7 @@ def provision_slave_node(*, name, hostname):
     sudo(settings.CMD_DOCKER_EXTERNAL_IP.format(port=settings.DOCKERD_API_PORT))
     sudo(settings.CMD_DOCKER_RESTART)
 
-    portainer_client = PortainerClient(settings.PORTAINER_INTERNAL_URL)
-    portainer_client.authenticate(
-        settings.PORTAINER_ADMIN_USER,
-        settings.PORTAINER_ADMIN_PASSWORD,
-    )
-
+    portainer_client = PortainerClient.get_internal_client()
     response = portainer_client.add_endpoint(
         name,
         f'tcp://{hostname}:{settings.DOCKERD_API_PORT}',
