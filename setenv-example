@@ -6,7 +6,7 @@ export MASTER_HOST='192.168.0.41'
 
 # The address you will use for provisioning, should be accessible from your current machine
 # If you provision the master from a local network - it can match PORTAINER_LOCAL_BASE_URL
-export PORTAINER_EXTERNAL_URL="http://example.com:$PORTAINER_PORT"
+export PORTAINER_EXTERNAL_URL="http://$MASTER_HOST:$PORTAINER_PORT"
 
 # The address all containers will use inside a local network after provisioning.
 export PORTAINER_INTERNAL_URL="http://$MASTER_HOST:$PORTAINER_PORT"
