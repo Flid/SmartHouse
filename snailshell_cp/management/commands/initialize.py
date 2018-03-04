@@ -1,11 +1,13 @@
 from uuid import uuid4
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
-from django.conf import settings
-from snailshell_cp.models import Node, PERMISSION_DEPLOY, AccessKey
-from fabric.api import execute
-from snailshell_cp.management.cluster_control.utils import generate_local_ssh_key
+
+from snailshell_cp.management.cluster_control.utils import (
+    generate_local_ssh_key
+)
+from snailshell_cp.models import PERMISSION_DEPLOY, AccessKey, Node
 
 
 class Command(BaseCommand):

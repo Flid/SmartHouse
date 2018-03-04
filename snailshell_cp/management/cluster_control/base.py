@@ -1,7 +1,9 @@
-from fabric.api import settings as fab_settings, task
 from contextlib import wraps
-from fabric.exceptions import NetworkError
+
 from django.conf import settings
+from fabric.api import settings as fab_settings
+from fabric.api import task
+from fabric.exceptions import NetworkError
 
 
 class BaseClusterControlException(Exception):

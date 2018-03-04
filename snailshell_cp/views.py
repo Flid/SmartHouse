@@ -1,12 +1,15 @@
-from django.http import HttpResponse, JsonResponse
-import datetime
-from django.http import HttpResponseNotAllowed, HttpResponseBadRequest
-from django.core.exceptions import PermissionDenied
-from django.views.decorators.csrf import csrf_exempt
 import json
 
+from django.core.exceptions import PermissionDenied
+from django.http import (
+    HttpResponseBadRequest,
+    HttpResponseNotAllowed,
+    JsonResponse
+)
+from django.views.decorators.csrf import csrf_exempt
+
 from snailshell_cp.forms import CreateDeployJobForm
-from snailshell_cp.models import Node, DeployJob, PERMISSION_DEPLOY, AccessKey
+from snailshell_cp.models import PERMISSION_DEPLOY, AccessKey, DeployJob
 
 
 def _check_permissions(access_key, required_permissions):

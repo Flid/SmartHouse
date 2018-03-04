@@ -1,16 +1,18 @@
-from django.contrib import admin
-from django.conf import settings
 from django import forms
+from django.conf import settings
+from django.contrib import admin
 from django.core.exceptions import MultipleObjectsReturned
-
-from fabric.api import execute
-from snailshell_cp.clients.portainer import PortainerClient
-from snailshell_cp.management.cluster_control.base import build_host_string
-from snailshell_cp.management.cluster_control.utils import add_ssh_host
-from snailshell_cp.models import Node, AccessKey, DeployJob
 from django.utils.safestring import mark_safe
+from fabric.api import execute
+
+from snailshell_cp.clients.portainer import PortainerClient
 from snailshell_cp.management.cluster_control import provision_slave_node
-from snailshell_cp.management.cluster_control.base import BaseClusterControlException
+from snailshell_cp.management.cluster_control.base import (
+    BaseClusterControlException,
+    build_host_string
+)
+from snailshell_cp.management.cluster_control.utils import add_ssh_host
+from snailshell_cp.models import AccessKey, DeployJob, Node
 
 
 def delete_node(modeladmin, request, queryset):
@@ -22,12 +24,12 @@ def delete_node(modeladmin, request, queryset):
     if node.id == settings.PORTAINER_LOCAL_ENDPOINT_ID:
         raise forms.ValidationError('Can\'t remove the master node')
 
-
     portainer_client = PortainerClient.get_internal_client()
     portainer_client.remove_endpoint(node.id)
 
     # TODO show some message using https://docs.djangoproject.com/en/dev/ref/contrib/messages/
     node.delete()
+
 
 delete_node.short_description = 'Detach node from the cluster'
 

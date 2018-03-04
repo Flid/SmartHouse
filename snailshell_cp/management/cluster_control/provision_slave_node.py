@@ -1,12 +1,12 @@
-from asyncio import sleep
-
-from fabric.api import sudo
 import logging
+
 from django.conf import settings
+from fabric.api import sudo
 
 from snailshell_cp.clients.portainer import PortainerClient
 from snailshell_cp.management.cluster_control.utils import reset_docker
-from .base import cp_task, copy_configs
+
+from .base import cp_task
 
 logger = logging.getLogger(__name__)
 

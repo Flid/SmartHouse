@@ -36,7 +36,7 @@ Admin login is `$CONTROL_PANEL_ADMIN_USER`, password is `$CONTROL_PANEL_ADMIN_PA
 
 ## Installation
 
-* Set up master controller node:
+Set up master controller node:
 ```
 cp setenv-example setenv-mynode
 ```
@@ -57,3 +57,13 @@ fab provision_master_node -H root@$MASTER_HOST:22
 
 The process will finish in a few minutes.
 
+
+## How to contribute
+
+First of all, don't forget to install some lovely useful tools:
+
+```
+pip install -r requirements-test.txt
+
+pre-commit install
+```

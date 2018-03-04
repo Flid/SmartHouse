@@ -1,8 +1,9 @@
+import json
 from urllib.parse import urljoin
 
-from .base import BaseHTTPClient, BaseHTTPClientError
-import json
 from django.conf import settings
+
+from .base import BaseHTTPClient, BaseHTTPClientError
 
 
 class DockerAPIError(BaseHTTPClientError):
@@ -38,7 +39,7 @@ class PortainerClient(BaseHTTPClient):
             method,
             path,
             headers=headers,
-            **kwargs
+            **kwargs,
         )
 
     def init_admin(self, login, password):
@@ -154,7 +155,7 @@ class PortainerClient(BaseHTTPClient):
         return response.json()
 
     def remove_endpoint(self, endpoint_id):
-        response = self._perform_request(
+        self._perform_request(
             'DELETE',
             f'api/endpoints/{endpoint_id}',
         )

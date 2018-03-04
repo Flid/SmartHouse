@@ -1,8 +1,10 @@
-from fabric.api import local, sudo
-import os
 import logging
-from .base import cp_task
+import os
+
 from django.conf import settings
+from fabric.api import local, sudo
+
+from .base import cp_task
 
 logger = logging.getLogger(__name__)
 

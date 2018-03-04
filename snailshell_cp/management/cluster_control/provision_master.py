@@ -1,11 +1,13 @@
-from fabric.api import sudo, run
-
-from snailshell_cp.management.cluster_control.utils import reset_docker
-from .base import cp_task, copy_configs, get_all_settings_keys
-from time import sleep
 import logging
+from time import sleep
+
 from django.conf import settings
+from fabric.api import sudo
+
 from snailshell_cp.clients.portainer import PortainerClient
+from snailshell_cp.management.cluster_control.utils import reset_docker
+
+from .base import copy_configs, cp_task, get_all_settings_keys
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +28,7 @@ def provision_master_node():
         f'-v /var/run/docker.sock:/var/run/docker.sock '
         f'-v /opt/portainer:/data '
         f'--name {settings.PORTAINER_DOCKER_CONTAINER_NAME} '
-        f'{settings.PORTAINER_IMAGE_NAME}:{settings.PORTAINER_IMAGE_TAG}'
+        f'{settings.PORTAINER_IMAGE_NAME}:{settings.PORTAINER_IMAGE_TAG}',
     )
 
     sleep(2)  # TODO
@@ -68,7 +70,7 @@ def provision_master_node():
                 '5432/tcp': [{'HostPort': str(settings.POSTGRES_PORT)}],
             },
             'RestartPolicy': {'Name': 'unless-stopped'},
-        }
+        },
     )
     portainer_client.start_container(
         settings.PORTAINER_LOCAL_ENDPOINT_ID,
@@ -97,7 +99,7 @@ def provision_master_node():
                 '15672/tcp': [{'HostPort': str(settings.RABBITMQ_MANAGEMENT_PORT)}],
             },
             'RestartPolicy': {'Name': 'unless-stopped'},
-        }
+        },
     )
     portainer_client.start_container(
         settings.PORTAINER_LOCAL_ENDPOINT_ID,
@@ -134,7 +136,7 @@ def provision_master_node():
             # },
             'RestartPolicy': {'Name': 'unless-stopped'},
             'User': settings.CONTROL_PANEL_LINUX_USER,
-        }
+        },
     )
 
     portainer_client.start_container(
