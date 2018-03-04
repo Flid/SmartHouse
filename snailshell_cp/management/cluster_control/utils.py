@@ -3,6 +3,7 @@ import os
 
 from django.conf import settings
 from fabric.api import local, sudo
+from storm import Storm
 
 from .base import cp_task
 
@@ -22,10 +23,29 @@ def generate_local_ssh_key():
 
 
 @cp_task
-def add_ssh_host(*, host, port, login, password):
+def add_ssh_host(*, name, host, port, login, password):
+    storm_ = Storm()
+
+    try:
+        storm_.delete_entry(name)
+    except ValueError:
+        pass
+
+    storm_.add_entry(
+        name,
+        host,
+        login,
+        port,
+        id_file='',
+        custom_options=[
+            'StrictHostKeyChecking=no',
+            'UserKnownHostsFile=/dev/null',
+        ],
+    )
+
     # TODO can be insecure. Copy the password to a local file
-    # with o+r permissions and use the file with `-f` option.
-    local(f'sshpass -p {password} ssh-copy-id {login}@{host} -p {port}')
+    # with 0600 permissions and use the file with `-f` option.
+    local(f'sshpass -p {password} ssh-copy-id {name}')
 
 
 def reset_docker():

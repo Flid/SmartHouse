@@ -55,6 +55,7 @@ class NodeCreateForm(forms.ModelForm):
 
         try:
             add_ssh_host(
+                name=cleaned_data['name'],
                 login=cleaned_data['login'],
                 password=cleaned_data['password'],
                 host=cleaned_data['host'],
