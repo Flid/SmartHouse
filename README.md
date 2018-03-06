@@ -52,7 +52,7 @@ user needs to have root access.
 . ./setenv-mynode
 pip install -r requirements.txt
 
-fab provision_master_node -H root@$MASTER_HOST:22
+DJANGO_SETTINGS_MODULE=snailshell_cp.settings fab provision_master_node -H root@$MASTER_HOST:22
 ```
 
 The process will finish in a few minutes.
