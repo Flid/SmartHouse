@@ -1,8 +1,9 @@
 import logging
+import os
 from time import sleep
 
 from django.conf import settings
-from fabric.api import sudo
+from fabric.api import run, sudo
 
 from snailshell_cp.clients.portainer import PortainerClient
 from snailshell_cp.management.cluster_control.utils import reset_docker
@@ -107,8 +108,8 @@ def provision_master_node():
     )
 
     # Control panel
-    # homedir = str(run('echo $HOME'))
-    # sshdir = os.path.join(homedir, '.ssh')
+    homedir = str(run('echo $HOME'))
+    sshdir = os.path.join(homedir, '.ssh')
 
     portainer_client.create_image(
         settings.PORTAINER_LOCAL_ENDPOINT_ID,
@@ -128,12 +129,12 @@ def provision_master_node():
                 f'8000/tcp': [{'HostPort': str(settings.CONTROL_PANEL_PORT)}],
             },
             # TODO In future we might want to share host ssh key
-            # 'Volumes': {'/ssh-conf/': {}},
-            # 'HostConfig': {
-            #     'Binds': [
-            #         f'{sshdir}:/ssh-conf/',
-            #     ],
-            # },
+            'Volumes': {'/ssh-conf/': {}},
+            'HostConfig': {
+                'Binds': [
+                    f'{sshdir}:/ssh-conf/',
+                ],
+            },
             'RestartPolicy': {'Name': 'unless-stopped'},
             'User': settings.CONTROL_PANEL_LINUX_USER,
         },

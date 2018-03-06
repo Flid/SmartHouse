@@ -8,6 +8,8 @@ class Node(models.Model):
     host = models.CharField(max_length=255)
     port = models.PositiveIntegerField()
 
+    is_provisioned = models.BooleanField(default=False)
+
     def __str__(self):
         return f'<{self.__class__.__name__}: id={self.id} name={self.name}>'
 
@@ -30,6 +32,13 @@ class DeployJob(AsyncJob):
             f'<{self.__class__.__name__}: node_id={self.node_id} '
             f'image={self.image_name}:{self.image_tag}>'
         )
+
+
+class NodeProvisionJob(AsyncJob):
+    node = models.ForeignKey(Node, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f'<{self.__class__.__name__}: node_id={self.node_id}'
 
 
 PERMISSION_DEPLOY = 'deploy'
