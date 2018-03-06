@@ -128,15 +128,17 @@ def provision_master_node(reinstall_docker=True):
             'Env': copy_configs({
                 key: key for key in get_all_settings_keys()
             }),
-            'PortBindings': {
-                f'8000/tcp': [{'HostPort': str(settings.CONTROL_PANEL_PORT)}],
-            },
-            # TODO In future we might want to share host ssh key
+
             'Volumes': {container_sshdir: {}},
             'HostConfig': {
                 'Binds': [
                     f'{host_sshdir}:{container_sshdir}',
                 ],
+                'PortBindings': {
+                    f'8000/tcp': [
+                        {'HostPort': str(settings.CONTROL_PANEL_PORT)},
+                    ],
+                },
             },
             'RestartPolicy': {'Name': 'unless-stopped'},
             'User': settings.CONTROL_PANEL_LINUX_USER,

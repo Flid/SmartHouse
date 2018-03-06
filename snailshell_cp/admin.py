@@ -40,41 +40,44 @@ class NodeCreateForm(forms.ModelForm):
         help_text='Password is only used to add an ssh key and is never stored anywhere.',
     )
 
+    reinstall_docker = forms.BooleanField(initial=True, required=False)
+
     class Meta:
         model = Node
-        exclude = ['id']
+        exclude = ['id', 'is_provisioned']
 
-    def clean(self):
-        cleaned_data = super().clean()
+    def full_clean(self):
+        super().full_clean()
 
         host_string = build_host_string(
-            login=cleaned_data['login'],
-            host=cleaned_data['host'],
-            port=cleaned_data['port'],
+            login=self.cleaned_data['login'],
+            host=self.cleaned_data['host'],
+            port=self.cleaned_data['port'],
         )
 
         try:
             add_ssh_host(
-                name=cleaned_data['name'],
-                login=cleaned_data['login'],
-                password=cleaned_data['password'],
-                host=cleaned_data['host'],
-                port=cleaned_data['port'],
+                name=self.cleaned_data['name'],
+                login=self.cleaned_data['login'],
+                password=self.cleaned_data['password'],
+                host=self.cleaned_data['host'],
+                port=self.cleaned_data['port'],
             )
             # Configure docker on the remote machine
             # and add an entrypoint to Portainer
             response = execute(
                 provision_slave_node,
-                name=cleaned_data['name'],
+                name=self.cleaned_data['name'],
                 host=host_string,
-                hostname=cleaned_data['host'],
+                hostname=self.cleaned_data['host'],
+                reinstall_docker=self.cleaned_data.get('reinstall_docker', False),
             )
 
         except BaseClusterControlException as exc:
-            raise forms.ValidationError(str(exc))
+            self.add_error(None, str(exc))
+            return
 
         self._obj_id = response[host_string]['entrypoint_id']
-        return cleaned_data
 
     def save(self, *args, **kwargs):
         self.instance.id = self._obj_id

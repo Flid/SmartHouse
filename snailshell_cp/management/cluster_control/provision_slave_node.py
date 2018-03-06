@@ -12,13 +12,13 @@ logger = logging.getLogger(__name__)
 
 
 @cp_task
-def provision_slave_node(*, name, hostname):
+def provision_slave_node(*, name, hostname, reinstall_docker=True):
     """
     Connect to a slave node, setup Docker and connect it to the cluster.
     Returns an ID of a newly created endpoint.
     """
 
-    reset_docker()
+    reset_docker(reinstall_docker=reinstall_docker)
 
     sudo(settings.CMD_DOCKER_EXTERNAL_IP.format(port=settings.DOCKERD_API_PORT))
     sudo(settings.CMD_DOCKER_RESTART)
