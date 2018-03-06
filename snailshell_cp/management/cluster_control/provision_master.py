@@ -1,9 +1,8 @@
 import logging
-import os
 from time import sleep
 
 from django.conf import settings
-from fabric.api import run, sudo
+from fabric.api import sudo
 
 from snailshell_cp.clients.portainer import PortainerClient
 from snailshell_cp.management.cluster_control.utils import reset_docker
@@ -14,12 +13,14 @@ logger = logging.getLogger(__name__)
 
 
 @cp_task
-def provision_master_node():
+def provision_master_node(reinstall_docker=True):
     """
     Run on a main node once to set up all the services needed.
     WARNING: it wipes out everything, all unsaved data will be lost.
     """
-    reset_docker()
+    reinstall_docker = (reinstall_docker not in (False, '0', 'false', 'False'))
+
+    reset_docker(reinstall_docker=reinstall_docker)
 
     sudo('rm -rf /opt/portainer/')
 
@@ -108,8 +109,10 @@ def provision_master_node():
     )
 
     # Control panel
-    homedir = str(run('echo $HOME'))
-    sshdir = os.path.join(homedir, '.ssh')
+    # Create a directory to store ssh configs of the container
+    # TODO grop all configs on provisioning
+    host_sshdir = '/opt/snailshell_cp/.ssh'
+    container_sshdir = f'/home/{settings.CONTROL_PANEL_LINUX_USER}/.ssh'
 
     portainer_client.create_image(
         settings.PORTAINER_LOCAL_ENDPOINT_ID,
@@ -129,10 +132,10 @@ def provision_master_node():
                 f'8000/tcp': [{'HostPort': str(settings.CONTROL_PANEL_PORT)}],
             },
             # TODO In future we might want to share host ssh key
-            'Volumes': {'/ssh-conf/': {}},
+            'Volumes': {container_sshdir: {}},
             'HostConfig': {
                 'Binds': [
-                    f'{sshdir}:/ssh-conf/',
+                    f'{host_sshdir}:{container_sshdir}',
                 ],
             },
             'RestartPolicy': {'Name': 'unless-stopped'},

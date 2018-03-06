@@ -37,6 +37,8 @@ def add_ssh_host(*, name, host, port, login, password):
         login,
         port,
         id_file='',
+        # With these options there will be no stupid interactive
+        # questions on ssh key uploading.
         custom_options=[
             'StrictHostKeyChecking=no',
             'UserKnownHostsFile=/dev/null',
@@ -48,9 +50,10 @@ def add_ssh_host(*, name, host, port, login, password):
     local(f'sshpass -p {password} ssh-copy-id {name}')
 
 
-def reset_docker():
-    sudo(settings.CMD_UNINSTALL_DOCKER)
-    sudo(settings.CMD_INSTALL_DOCKER)
+def reset_docker(reinstall_docker=True):
+    if reinstall_docker:
+        sudo(settings.CMD_UNINSTALL_DOCKER)
+        sudo(settings.CMD_INSTALL_DOCKER)
 
     # Stop and remove all containers/images
     containers_running = sudo('docker ps -a -q')
