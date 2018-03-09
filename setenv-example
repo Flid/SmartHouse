@@ -78,3 +78,4 @@ export DOCKER_LOCAL_SOCKET_PATH='unix:///var/run/docker.sock'
 
 # Should match a value from Dockerfile
 export CONTROL_PANEL_LINUX_USER='snailshell-cp-user'
+export STATIC_ROOT='/opt/snailshell/control_panel/static/'

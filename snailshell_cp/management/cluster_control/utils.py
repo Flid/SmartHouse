@@ -60,19 +60,18 @@ def add_ssh_host(*, name, host, port, login, password):
 
 def reset_docker(reinstall_docker=True, local_mode=False):
     executor = local if local_mode else sudo
-    options = {}
-
-    if local_mode:
-        options = {'capture': True}
 
     if reinstall_docker:
         executor(settings.CMD_UNINSTALL_DOCKER)
         executor(settings.CMD_INSTALL_DOCKER)
 
     # Stop and remove all containers/images
+    options = {'capture': True} if local_mode else {}
     containers_running = executor('docker ps -a -q', **options)
 
     if containers_running:
         containers_running = ' '.join(containers_running.split())
         executor(f'docker stop {containers_running}')
         executor(f'docker rm {containers_running}')
+
+    executor('docker system prune -f')

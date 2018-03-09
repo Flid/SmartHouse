@@ -8,7 +8,6 @@ ENV QEMU_EXECVE 1
 ENV ROOT /opt/snailshell/control_panel/
 ENV STATIC_ROOT $ROOT/static
 ENV RUN_USER snailshell-cp-user
-
 COPY qemu/cross-build-end qemu/cross-build-start qemu/qemu-arm-static qemu/sh-shim /usr/bin/
 RUN ["cross-build-start"]
 

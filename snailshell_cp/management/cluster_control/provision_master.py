@@ -60,6 +60,8 @@ def _apply_migrations():
     attempts_left = 20
 
     while True:
+        sleep(3)
+
         try:
             local('python3 manage.py migrate --noinput')
             break
@@ -70,7 +72,6 @@ def _apply_migrations():
             )
 
         attempts_left -= 1
-        sleep(3)
 
         if attempts_left == 0:
             raise Exception('Can\'t connect to DB after 60 seconds')
@@ -168,16 +169,15 @@ def _setup_rabbitmq(portainer_client):
             'RABBITMQ_DEFAULT_PASS': '$RABBITMQ_PASSWORD',
         }),
         host_config=jdump({
-            'HostConfig': {
-                'PortBindings': {
-                    '5672/tcp': [
-                        {'HostPort': str(settings.RABBITMQ_PORT)},
-                    ],
-                    '15672/tcp': [
-                        {'HostPort': str(settings.RABBITMQ_MANAGEMENT_PORT)},
-                    ],
-                },
+            'PortBindings': {
+                '5672/tcp': [
+                    {'HostPort': str(settings.RABBITMQ_PORT)},
+                ],
+                '15672/tcp': [
+                    {'HostPort': str(settings.RABBITMQ_MANAGEMENT_PORT)},
+                ],
             },
+
         }),
     )
 
@@ -208,15 +208,13 @@ def _setup_control_panel(portainer_client):
         is_system_service=True,
         env_variables=jdump(env_map),
         host_config=jdump({
-            'HostConfig': {
-                'Binds': [
-                    f'{HOST_SSH_DIR}:{container_sshdir}',
+            'Binds': [
+                f'{HOST_SSH_DIR}:{container_sshdir}',
+            ],
+            'PortBindings': {
+                f'8000/tcp': [
+                    {'HostPort': str(settings.CONTROL_PANEL_PORT)},
                 ],
-                'PortBindings': {
-                    f'8000/tcp': [
-                        {'HostPort': str(settings.CONTROL_PANEL_PORT)},
-                    ],
-                },
             },
         }),
         volumes=jdump({container_sshdir: {}}),
@@ -257,7 +255,6 @@ def provision_master_node(reinstall_docker=True):
     WARNING: it wipes out everything, all unsaved data will be lost.
     """
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'snailshell_cp.settings')
-    os.environ.setdefault('STATIC_ROOT', 'unset')
 
     reinstall_docker = (reinstall_docker not in (False, '0', 'false', 'False'))
 
