@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from snailshell_cp.forms import CreateDeployJobForm
 from snailshell_cp.models import PERMISSION_DEPLOY, AccessKey, DeployJob
+from snailshell_cp.tasks import deploy_container
 
 
 def _check_permissions(access_key, required_permissions):
@@ -51,5 +52,6 @@ def create_deploy_job(request):
         image_name=form.cleaned_data['image_name'],
         image_tag=form.cleaned_data['image_tag'],
     )
+    deploy_container.delay(deploy_job.id)
 
     return JsonResponse({'status': 'ok', 'job_id': deploy_job.id})

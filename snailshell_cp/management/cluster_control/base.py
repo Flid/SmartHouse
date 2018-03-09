@@ -35,11 +35,16 @@ def cp_task(func):
     return _runner
 
 
-def copy_configs(keys_map):
-    return [
-        f'{key_to}={getattr(settings, key_from)}'
-        for key_to, key_from in keys_map.items()
-    ]
+def create_environment(keys_map):
+    output = []
+
+    for key, value in keys_map.items():
+        if value.startswith('$'):
+            value = getattr(settings, value[1:])
+
+        output.append(f'{key}={value}')
+
+    return output
 
 
 def get_all_settings_keys():

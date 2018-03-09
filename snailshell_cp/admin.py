@@ -116,8 +116,8 @@ class AccessKeyAdmin(admin.ModelAdmin):
 
 class DeployJobAdmin(admin.ModelAdmin):
     list_display = (
-        'node',
-        'image_name',
+        'service',
+        'status',
         'image_tag',
         'created_at',
         'completed_at',

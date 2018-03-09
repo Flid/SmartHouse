@@ -132,8 +132,19 @@ class PortainerClient(BaseHTTPClient):
         )
         try:
             return response[-1]['Id']
-        except KeyError:
+        except (IndexError, KeyError):
             raise ValueError('Failed to get container ID from response')
+
+    def get_container_info(self, endpoint_id, name_or_id):
+        response = self.call_docker_api(
+            endpoint_id,
+            'GET',
+            f'containers/{name_or_id}/json',
+        )
+        try:
+            return response[-1]
+        except IndexError:
+            raise ValueError('Failed to fetch container info')
 
     def start_container(self, endpoint_id, id_or_name):
         response = self.call_docker_api(

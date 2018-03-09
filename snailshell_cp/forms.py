@@ -8,4 +8,4 @@ class CreateDeployJobForm(forms.ModelForm):
 
     class Meta:
         model = DeployJob
-        fields = ['node', 'image_name', 'image_tag']
+        fields = ['service', 'image_tag']

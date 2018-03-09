@@ -49,10 +49,18 @@ and provision the master node. Define one host to ssh to,
 user needs to have root access.
 
 ```
+sudo apt install -y libpq-dev gcc libffi-dev make
+sudo pip3.6 install virtualenv
+virtualenv -p python3.6 /path/to/ve
+
+sudo su -
+
+cd /patht/to/control/panel/code
+. /path/to/ve/bin/activate
 . ./setenv-mynode
 pip install -r requirements.txt
 
-DJANGO_SETTINGS_MODULE=snailshell_cp.settings fab provision_master_node -H root@$MASTER_HOST:22
+fab provision_master_node -H root@$MASTER_HOST:22
 ```
 
 The process will finish in a few minutes.
