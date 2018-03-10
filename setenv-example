@@ -17,6 +17,10 @@ export SECRET_KEY='mmmm...so secret'
 export DEFAULT_USERNAME='snailshell'
 export DEFAULT_PASSWORD='snailshellpass'
 
+# A default key will be created on master provisioning, can be used to deploy services.
+# Set to empty string to auto-generate a random key.
+export CONTROL_PANEL_DEFAULT_DEPLOY_KEY='1234567890abcdef'
+
 # ========================================================================= #
 # Things you might want to customize, but it will work with the default settings
 # ========================================================================= #

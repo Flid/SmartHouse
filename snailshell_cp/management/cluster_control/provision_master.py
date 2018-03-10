@@ -139,7 +139,7 @@ def _setup_postgres(portainer_client):
 
     AccessKey.objects.create(
         permissions=PERMISSION_DEPLOY,
-        value=uuid4().hex,
+        value=settings.CONTROL_PANEL_DEFAULT_DEPLOY_KEY or uuid4().hex,
     )
 
     Service.objects.create(
