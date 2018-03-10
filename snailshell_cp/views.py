@@ -49,10 +49,10 @@ def create_deploy_job(request):
 
     service = form.cleaned_data['service']
 
-    if service.container_name in [
-        settings.CONTROL_PANEL_CONTAINER_NAME,
-        settings.CONTROL_PANEL_CELERY_MAIN_CONTAINER_NAME,
-    ]:
+    if (
+        service.is_system_service and
+        service.container_name != settings.CONTROL_PANEL_CELERY_SERVICE_CONTAINER_NAME
+    ):
         logger.error(
             'Service %s can\'t be deployed directly. Please deploy %s instead',
             service.container_name,

@@ -42,16 +42,16 @@ def _deploy_container(deploy_job_id, portainer_client=None):
                 service.node.id,
                 service.container_name,
             )
-        except BaseHTTPClientError as exc:
-            logger.info('Couldn\'t stop container (%s), continuing', exc)
+        except BaseHTTPClientError:
+            logger.info('Couldn\'t stop container, continuing')
 
         try:
             portainer_client.delete_container(
                 service.node.id,
                 service.container_name,
             )
-        except BaseHTTPClientError as exc:
-            logger.info('Couldn\'t delete container (%s), continuing', exc)
+        except BaseHTTPClientError:
+            logger.info('Couldn\'t delete container, continuing')
 
         portainer_client.create_image(
             service.node.id,

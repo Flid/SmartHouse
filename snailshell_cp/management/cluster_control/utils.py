@@ -10,6 +10,7 @@ from .base import cp_task
 
 logger = logging.getLogger(__name__)
 HOST_SSH_DIR = '/opt/snailshell_cp/.ssh'
+HOST_PG_DIR = '/opt/snailshell_cp/pg'
 
 
 def jdump(data):

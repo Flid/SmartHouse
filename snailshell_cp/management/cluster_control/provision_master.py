@@ -12,8 +12,8 @@ from snailshell_cp.management.cluster_control.utils import (
     HOST_SSH_DIR,
     generate_local_ssh_key,
     jdump,
-    reset_docker
-)
+    reset_docker,
+    HOST_PG_DIR)
 
 from .base import (
     CommandRunError,
@@ -87,7 +87,11 @@ def _setup_postgres(portainer_client):
         'PortBindings': {
             '5432/tcp': [{'HostPort': str(settings.POSTGRES_PORT)}],
         },
+        'Binds': [
+            f'{HOST_PG_DIR}:/var/lib/postgresql/data',
+        ],
     }
+    volumes = {'/var/lib/postgresql/data': {}}
 
     logger.info('Setting up Postgres...')
     portainer_client.create_image(
@@ -104,6 +108,7 @@ def _setup_postgres(portainer_client):
             'Env': create_environment(postgres_env),
             'HostConfig': host_config,
             'RestartPolicy': {'Name': 'unless-stopped'},
+            'Volumes': volumes,
         },
     )
     portainer_client.start_container(
@@ -150,6 +155,7 @@ def _setup_postgres(portainer_client):
         is_system_service=True,
         env_variables=jdump(postgres_env),
         host_config=jdump(host_config),
+        volumes=jdump(volumes),
     )
 
 
@@ -283,6 +289,7 @@ def provision_master_node(reinstall_docker=True):
 
     reset_docker(reinstall_docker=reinstall_docker, local_mode=True)
     local('rm -rf /opt/portainer/')
+    local(f'rm -rf {HOST_PG_DIR}/*')
 
     _setup_portainer()
     portainer_client = _get_portainer_client()
