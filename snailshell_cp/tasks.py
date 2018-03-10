@@ -94,6 +94,8 @@ def _deploy_container(deploy_job_id, portainer_client=None):
 def deploy_container(
     deploy_job_id, portainer_client=None, is_provisioning=False,
 ):
+    logger.info('Received a deploy task for service %s', deploy_job_id)
+
     deploy_job = _deploy_container(
         deploy_job_id,
         portainer_client=portainer_client,
@@ -103,6 +105,7 @@ def deploy_container(
         not is_provisioning and
         deploy_job.service.container_name == settings.CONTROL_PANEL_CELERY_SERVICE_CONTAINER_NAME
     ):  # noqa
+        logger.info('Generating additional tasks for self-update')
         for srv_name in [
             settings.CONTROL_PANEL_CONTAINER_NAME,
             settings.CONTROL_PANEL_CELERY_MAIN_CONTAINER_NAME,

@@ -108,10 +108,15 @@ class NodeAdmin(admin.ModelAdmin):
 
 
 class ServiceAdmin(admin.ModelAdmin):
+    def node_name(self, obj):
+        client = PortainerClient.get_internal_client(auth=False)
+        url = client.get_external_link_for_endpoint(obj.node.id)
+        return mark_safe(f'<a href="{url}">{obj.id}</a>')
+
     list_display = (
         'container_name',
         'image_name',
-        'node',
+        'node_name',
     )
 
 
