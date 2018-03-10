@@ -28,4 +28,4 @@ jobs:
       - deploy:
           name: Updating a running instance
           command: |
-            curl "$SERVICE_INSTANCE_URL/create_deploy_job/" -F service=$SERVICE_ID -F access_key="$ACCESS_KEY" --fail
+            curl "$SERVICE_INSTANCE_URL/create_deploy_job/" -F service=$SERVICE_ID -F access_key="$ACCESS_KEY" --fail -v
