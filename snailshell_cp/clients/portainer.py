@@ -33,7 +33,7 @@ class PortainerClient(BaseHTTPClient):
             if not self._auth_token:
                 raise RuntimeError('Need to call `authenticate` first!')
 
-            headers['Authorization'] = 'Bearer {}'.format(self._auth_token)
+            headers['Authorization'] = f'Bearer {self._auth_token}'
 
         return super()._perform_request(
             method,
@@ -67,10 +67,8 @@ class PortainerClient(BaseHTTPClient):
         self._auth_token = response.json()['jwt']
 
     def call_docker_api(self, endpoint_id, method, path, params=None, data=None):
-        full_path = 'api/endpoints/{}/docker/{}'.format(
-            endpoint_id,
-            path.lstrip('/'),
-        )
+        path = path.lstrip('/')
+        full_path = f'api/endpoints/{endpoint_id}/docker/{path}'
 
         response = self._perform_request(
             method,
@@ -120,7 +118,7 @@ class PortainerClient(BaseHTTPClient):
         if name:
             params['name'] = name
 
-        data = {'Image': '{}:{}'.format(image, tag)}
+        data = {'Image': f'{image}:{tag}'}
         data.update(request_data or {})
 
         response = self.call_docker_api(
@@ -150,7 +148,23 @@ class PortainerClient(BaseHTTPClient):
         response = self.call_docker_api(
             endpoint_id,
             'POST',
-            'containers/{}/start'.format(id_or_name),
+            f'containers/{id_or_name}/start',
+        )
+        return response
+
+    def stop_container(self, endpoint_id, id_or_name):
+        response = self.call_docker_api(
+            endpoint_id,
+            'POST',
+            f'containers/{id_or_name}/stop',
+        )
+        return response
+
+    def delete_container(self, endpoint_id, id_or_name):
+        response = self.call_docker_api(
+            endpoint_id,
+            'DELETE',
+            f'containers/{id_or_name}',
         )
         return response
 

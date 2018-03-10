@@ -6,6 +6,7 @@ import django
 from celery import Celery
 from django.conf import settings
 
+from snailshell_cp.clients.base import BaseHTTPClientError
 from snailshell_cp.clients.portainer import PortainerClient
 from snailshell_cp.management.cluster_control.base import create_environment
 
@@ -35,6 +36,22 @@ def _deploy_container(deploy_job_id, portainer_client=None):
         logger.info('Executing %s', deploy_job)
         service = deploy_job.service
         tag = deploy_job.image_tag or service.default_image_tag
+
+        try:
+            portainer_client.stop_container(
+                service.node.id,
+                service.container_name,
+            )
+        except BaseHTTPClientError as exc:
+            logger.info('Couldn\'t stop container (%s), continuing', exc)
+
+        try:
+            portainer_client.delete_container(
+                service.node.id,
+                service.container_name,
+            )
+        except BaseHTTPClientError as exc:
+            logger.info('Couldn\'t delete container (%s), continuing', exc)
 
         portainer_client.create_image(
             service.node.id,
