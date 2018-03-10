@@ -47,7 +47,7 @@ def create_deploy_job(request):
 
     _check_permissions(form.cleaned_data['access_key'], [PERMISSION_DEPLOY])
 
-    service = form.cleaned_data['node']
+    service = form.cleaned_data['service']
 
     if service.container_name in [
         settings.CONTROL_PANEL_CONTAINER_NAME,

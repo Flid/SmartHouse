@@ -109,9 +109,9 @@ class NodeAdmin(admin.ModelAdmin):
 
 class ServiceAdmin(admin.ModelAdmin):
     list_display = (
-        'node',
         'container_name',
         'image_name',
+        'node',
     )
 
 

@@ -17,7 +17,7 @@ class Node(models.Model):
 class Service(models.Model):
     node = models.ForeignKey(Node, on_delete=models.PROTECT)
     image_name = models.CharField(max_length=255)
-    default_image_tag = models.CharField(max_length=255)
+    default_image_tag = models.CharField(max_length=255, default='latest')
     container_name = models.CharField(max_length=255)
 
     is_system_service = models.BooleanField(default=False)
@@ -43,6 +43,8 @@ class Service(models.Model):
     )
     command = models.TextField(
         help_text='JSON, passed to `Cmd` parameter on container creation',
+        null=True,
+        blank=True,
     )
     user_name = models.CharField(
         help_text='Linux user to run the container with',
