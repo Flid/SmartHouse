@@ -228,15 +228,34 @@ def _setup_control_panel(portainer_client):
         portainer_client=portainer_client,
     )
 
-    # Celery
+    # Celery Main
     service_celery = Service.objects.create(
         node_id=settings.PORTAINER_LOCAL_ENDPOINT_ID,
         image_name=settings.CONTROL_PANEL_IMAGE_NAME,
         default_image_tag=settings.CONTROL_PANEL_IMAGE_TAG,
-        container_name=settings.CONTROL_PANEL_CELERY_CONTAINER_NAME,
+        container_name=settings.CONTROL_PANEL_CELERY_MAIN_CONTAINER_NAME,
         is_system_service=True,
         env_variables=jdump(env_map),
-        command=jdump(['./run_celery.sh']),
+        command=jdump(['./run_celery_main.sh']),
+        user_name=settings.CONTROL_PANEL_LINUX_USER,
+    )
+    deploy_job_celery = DeployJob.objects.create(
+        service=service_celery,
+    )
+    deploy_container(
+        deploy_job_id=deploy_job_celery.id,
+        portainer_client=portainer_client,
+    )
+
+    # Celery Service
+    service_celery = Service.objects.create(
+        node_id=settings.PORTAINER_LOCAL_ENDPOINT_ID,
+        image_name=settings.CONTROL_PANEL_IMAGE_NAME,
+        default_image_tag=settings.CONTROL_PANEL_IMAGE_TAG,
+        container_name=settings.CONTROL_PANEL_CELERY_SERVICE_CONTAINER_NAME,
+        is_system_service=True,
+        env_variables=jdump(env_map),
+        command=jdump(['./run_celery_service.sh']),
         user_name=settings.CONTROL_PANEL_LINUX_USER,
     )
     deploy_job_celery = DeployJob.objects.create(

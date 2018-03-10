@@ -24,7 +24,8 @@ export DEBUG=false
 export LOG_LEVEL=DEBUG
 
 export CONTROL_PANEL_CONTAINER_NAME='ss_control_panel'
-export CONTROL_PANEL_CELERY_CONTAINER_NAME='ss_control_panel_celery'
+export CONTROL_PANEL_CELERY_MAIN_CONTAINER_NAME='ss_control_panel_celery_main'
+export CONTROL_PANEL_CELERY_MAIN_SERVICE_NAME='ss_control_panel_celery_srv'
 export CONTROL_PANEL_IMAGE_NAME='antonkir/snailshell_control_panel'
 export CONTROL_PANEL_IMAGE_TAG='latest'
 export CONTROL_PANEL_PORT='10001'

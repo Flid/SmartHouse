@@ -12,7 +12,7 @@ from snailshell_cp.management.cluster_control.base import (
     build_host_string
 )
 from snailshell_cp.management.cluster_control.utils import add_ssh_host
-from snailshell_cp.models import AccessKey, DeployJob, Node
+from snailshell_cp.models import AccessKey, DeployJob, Node, Service
 
 
 def delete_node(modeladmin, request, queryset):
@@ -107,6 +107,14 @@ class NodeAdmin(admin.ModelAdmin):
     )
 
 
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = (
+        'node',
+        'container_name',
+        'image_name',
+    )
+
+
 class AccessKeyAdmin(admin.ModelAdmin):
     list_display = (
         'permissions',
@@ -125,5 +133,6 @@ class DeployJobAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Node, NodeAdmin)
-admin.site.register(AccessKey, AccessKeyAdmin)
+admin.site.register(Service, ServiceAdmin)
 admin.site.register(DeployJob, DeployJobAdmin)
+admin.site.register(AccessKey, AccessKeyAdmin)

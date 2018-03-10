@@ -20,6 +20,12 @@ jobs:
           command: |
             docker build -t antonkir/snailshell_control_panel .
       - deploy:
+          name: Upload to Docker Hub
           command: |
             docker tag antonkir/snailshell_control_panel antonkir/snailshell_control_panel:$(git rev-parse HEAD)
             docker push antonkir/snailshell_control_panel
+
+      - deploy:
+          name: Updating a running instance
+          command: |
+            curl "$SERVICE_INSTANCE_URL/create_deploy_job/" -F service=$SERVICE_ID -F access_key="$ACCESS_KEY"
