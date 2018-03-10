@@ -7,12 +7,13 @@ from celery import Celery
 from django.conf import settings
 
 from snailshell_cp.management.cluster_control.base import create_environment
-from snailshell_cp.models import DeployJob, Service
 
 app = Celery('snail_shell')
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'snailshell_cp.settings')
 django.setup()
+
+from snailshell_cp.models import DeployJob, Service  # noqa isort:skip
 
 app.config_from_object('django.conf:settings')
 
@@ -69,22 +70,27 @@ def _deploy_container(deploy_job_id, portainer_client=None):
 
 
 @app.task(name='snailshell_cp.deploy_container')
-def deploy_container(deploy_job_id, portainer_client=None):
+def deploy_container(
+    deploy_job_id, portainer_client=None, is_provisioning=False,
+):
     deploy_job = _deploy_container(
         deploy_job_id,
         portainer_client=portainer_client,
     )
 
-    if deploy_job.service.container_name == settings.CONTROL_PANEL_CELERY_SERVICE_CONTAINER_NAME:  # noqa
+    if (
+        not is_provisioning and
+        deploy_job.service.container_name == settings.CONTROL_PANEL_CELERY_SERVICE_CONTAINER_NAME
+    ):  # noqa
         for srv_name in [
             settings.CONTROL_PANEL_CONTAINER_NAME,
             settings.CONTROL_PANEL_CELERY_MAIN_CONTAINER_NAME,
         ]:
-            job_cp = DeployJob.objects.create(
+            job = DeployJob.objects.create(
                 service=Service.objects.get(container_name=srv_name),
                 image_tag=deploy_job.image_tag,
             )
-            self_update.delay(job_cp)
+            self_update.delay(job.id)
 
 
 @app.task(name='snailshell_cp.self_update')

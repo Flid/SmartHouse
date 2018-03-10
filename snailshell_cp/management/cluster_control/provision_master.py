@@ -187,6 +187,7 @@ def _setup_rabbitmq(portainer_client):
     deploy_container(
         deploy_job_id=deploy_job.id,
         portainer_client=portainer_client,
+        is_provisioning=True,
     )
 
 
@@ -226,6 +227,7 @@ def _setup_control_panel(portainer_client):
     deploy_container(
         deploy_job_id=deploy_job_cp.id,
         portainer_client=portainer_client,
+        is_provisioning=True,
     )
 
     # Celery Main
@@ -245,6 +247,7 @@ def _setup_control_panel(portainer_client):
     deploy_container(
         deploy_job_id=deploy_job_celery.id,
         portainer_client=portainer_client,
+        is_provisioning=True,
     )
 
     # Celery Service
@@ -264,6 +267,7 @@ def _setup_control_panel(portainer_client):
     deploy_container(
         deploy_job_id=deploy_job_celery.id,
         portainer_client=portainer_client,
+        is_provisioning=True,
     )
 
 
