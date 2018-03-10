@@ -6,6 +6,7 @@ import django
 from celery import Celery
 from django.conf import settings
 
+from snailshell_cp.clients.portainer import PortainerClient
 from snailshell_cp.management.cluster_control.base import create_environment
 
 app = Celery('snail_shell')
@@ -25,6 +26,9 @@ def jload(data):
 
 
 def _deploy_container(deploy_job_id, portainer_client=None):
+    if portainer_client is None:
+        portainer_client = PortainerClient.get_internal_client()
+
     deploy_job = DeployJob.objects.get(id=deploy_job_id)
 
     try:
