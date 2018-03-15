@@ -66,6 +66,11 @@ def reset_docker(reinstall_docker=True, local_mode=False):
         executor(settings.CMD_UNINSTALL_DOCKER)
         executor(settings.CMD_INSTALL_DOCKER)
 
+    if settings.DOCKERHUB_USER:
+        executor(f'docker login -u {settings.DOCKERHUB_USER} -p {settings.DOCKERHUB_PASSWORD}')
+    else:
+        logger.info('Skipping dockerhub login, you need to manually do that')
+
     # Stop and remove all containers/images
     options = {'capture': True} if local_mode else {}
     containers_running = executor('docker ps -a -q', **options)

@@ -1,3 +1,5 @@
+import json
+
 from django import forms
 from django.conf import settings
 from django.contrib import admin
@@ -107,11 +109,41 @@ class NodeAdmin(admin.ModelAdmin):
     )
 
 
+class ServiceForm(forms.ModelForm):
+    def full_clean(self):
+        super().full_clean()
+
+        if self.instance is None:
+            return
+
+        if self.instance.is_system_service:
+            self.add_error(None, 'Can\' edit a system service')
+            return
+
+        for key in ['env_variables', 'host_config', 'volumes', 'command']:
+            value = getattr(self.instance, key)
+
+            try:
+                value = json.loads(value)
+            except ValueError:
+                self.add_error(key, 'Invalid JSON')
+                continue
+
+            # Make it pretty
+            setattr(self.instance, key, json.dumps(value, indent=2))
+
+    class Meta:
+        model = Service
+        exclude = ['id', 'is_system_service']
+
+
 class ServiceAdmin(admin.ModelAdmin):
+    form = ServiceForm
+
     def node_name(self, obj):
         client = PortainerClient.get_internal_client(auth=False)
         url = client.get_external_link_for_endpoint(obj.node.id)
-        return mark_safe(f'<a href="{url}">{obj.id}</a>')
+        return mark_safe(f'<a href="{url}">{obj.name}</a>')
 
     list_display = (
         'container_name',

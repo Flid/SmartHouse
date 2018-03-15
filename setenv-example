@@ -21,6 +21,12 @@ export DEFAULT_PASSWORD='snailshellpass'
 # Set to empty string to auto-generate a random key.
 export CONTROL_PANEL_DEFAULT_DEPLOY_KEY='1234567890abcdef'
 
+# Your credentials for dockerhub. Will be stored in the environment variables.
+# If you don't like it - leave it blank,
+# but you need to manually do `docker login` on every node before using it.
+export DOCKERHUB_USER='changeme'
+export DOCKERHUB_PASSWORD='changeme'
+
 # ========================================================================= #
 # Things you might want to customize, but it will work with the default settings
 # ========================================================================= #

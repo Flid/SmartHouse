@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from datetime import datetime
 
 import django
 from celery import Celery
@@ -85,6 +86,7 @@ def _deploy_container(deploy_job_id, portainer_client=None):
 
     else:
         deploy_job.status = DeployJob.FINISHED
+        deploy_job.completed_at = datetime.utcnow()
         deploy_job.save()
 
     return deploy_job

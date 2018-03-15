@@ -16,7 +16,7 @@ jobs:
             docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
             uname -a
       - run:
-          name: Builing container
+          name: Building container
           command: |
             docker build -t antonkir/snailshell_control_panel .
       - deploy:

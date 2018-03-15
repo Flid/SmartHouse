@@ -66,7 +66,7 @@ class AsyncJob(models.Model):
     FINISHED = 'finished'
 
     created_at = models.DateTimeField(auto_now=True)
-    completed_at = models.DateTimeField(null=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
     status = models.CharField(
         choices=[(key, key) for key in [PENDING, FAILED, FINISHED]],
         default=PENDING,
