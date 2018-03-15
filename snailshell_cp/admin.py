@@ -116,12 +116,11 @@ class ServiceForm(forms.ModelForm):
         if self.instance is None:
             return
 
-        if self.instance.is_system_service:
-            self.add_error(None, 'Can\' edit a system service')
-            return
-
         for key in ['env_variables', 'host_config', 'volumes', 'command']:
             value = getattr(self.instance, key)
+
+            if not value:
+                continue
 
             try:
                 value = json.loads(value)
@@ -143,7 +142,7 @@ class ServiceAdmin(admin.ModelAdmin):
     def node_name(self, obj):
         client = PortainerClient.get_internal_client(auth=False)
         url = client.get_external_link_for_endpoint(obj.node.id)
-        return mark_safe(f'<a href="{url}">{obj.name}</a>')
+        return mark_safe(f'<a href="{url}">{obj.container_name}</a>')
 
     list_display = (
         'container_name',
