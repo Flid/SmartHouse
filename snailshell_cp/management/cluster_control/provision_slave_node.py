@@ -20,12 +20,12 @@ def provision_slave_node(*, name, hostname, reinstall_docker=True):
 
     reset_docker(reinstall_docker=reinstall_docker)
 
-    sudo(settings.CMD_DOCKER_EXTERNAL_IP.format(port=settings.DOCKERD_API_PORT))
-    sudo(settings.CMD_DOCKER_RESTART)
+    sudo(settings.ENV.CMD_DOCKER_EXTERNAL_IP.format(port=settings.ENV.DOCKERD_API_PORT))
+    sudo(settings.ENV.CMD_DOCKER_RESTART)
 
     portainer_client = PortainerClient.get_internal_client()
     response = portainer_client.add_endpoint(
         name,
-        f'tcp://{hostname}:{settings.DOCKERD_API_PORT}',
+        f'tcp://{hostname}:{settings.ENV.DOCKERD_API_PORT}',
     )
     return {'entrypoint_id': response['Id']}

@@ -35,26 +35,29 @@ def cp_task(func):
     return _runner
 
 
-def create_environment(keys_map):
+def create_environment(keys_map, include_all=True):
+    keys_map = keys_map or {}
     output = []
+
+    keys = set()
 
     for key, value in keys_map.items():
         if value.startswith('$'):
-            value = getattr(settings, value[1:])
+            try:
+                value = getattr(settings.ENV, value[1:])
+            except AttributeError:
+                value = getattr(settings, value[1:])
 
+        keys.add(key)
         output.append(f'{key}={value}')
 
-    return output
+    if include_all:
+        for key, value in settings.ENV.items():
+            if key in keys:
+                # Do not override explicitly defined variables
+                continue
 
-
-def get_all_settings_keys():
-    output = []
-
-    for key in dir(settings):
-        value = getattr(settings, key)
-
-        if isinstance(value, (str, int)):
-            output.append(key)
+            output.append(f'{key}={value}')
 
     return output
 

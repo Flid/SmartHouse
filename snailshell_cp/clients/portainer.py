@@ -17,12 +17,12 @@ class PortainerClient(BaseHTTPClient):
 
     @classmethod
     def get_internal_client(cls, auth=True):
-        client = cls(settings.PORTAINER_INTERNAL_URL)
+        client = cls(settings.ENV.PORTAINER_INTERNAL_URL)
 
         if auth:
             client.authenticate(
-                settings.PORTAINER_ADMIN_USER,
-                settings.PORTAINER_ADMIN_PASSWORD,
+                settings.ENV.PORTAINER_ADMIN_USER,
+                settings.ENV.PORTAINER_ADMIN_PASSWORD,
             )
 
         return client

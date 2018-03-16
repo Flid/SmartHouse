@@ -23,7 +23,7 @@ def delete_node(modeladmin, request, queryset):
     except (MultipleObjectsReturned, Node.DoesNotExist):
         raise forms.ValidationError('Exactly one object has to be selected')
 
-    if node.id == settings.PORTAINER_LOCAL_ENDPOINT_ID:
+    if node.id == settings.ENV.PORTAINER_LOCAL_ENDPOINT_ID:
         raise forms.ValidationError('Can\'t remove the master node')
 
     portainer_client = PortainerClient.get_internal_client()

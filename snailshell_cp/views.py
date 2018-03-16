@@ -51,12 +51,12 @@ def create_deploy_job(request):
 
     if (
         service.is_system_service and
-        service.container_name != settings.CONTROL_PANEL_CELERY_SERVICE_CONTAINER_NAME
+        service.container_name != settings.ENV.CONTROL_PANEL_CELERY_SERVICE_CONTAINER_NAME
     ):
         logger.error(
             'Service %s can\'t be deployed directly. Please deploy %s instead',
             service.container_name,
-            settings.CONTROL_PANEL_CELERY_SERVICE_CONTAINER_NAME,
+            settings.ENV.CONTROL_PANEL_CELERY_SERVICE_CONTAINER_NAME,
         )
         return JsonResponse(
             {

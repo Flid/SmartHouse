@@ -63,11 +63,11 @@ def reset_docker(reinstall_docker=True, local_mode=False):
     executor = local if local_mode else sudo
 
     if reinstall_docker:
-        executor(settings.CMD_UNINSTALL_DOCKER)
-        executor(settings.CMD_INSTALL_DOCKER)
+        executor(settings.ENV.CMD_UNINSTALL_DOCKER)
+        executor(settings.ENV.CMD_INSTALL_DOCKER)
 
-    if settings.DOCKERHUB_USER:
-        executor(f'docker login -u {settings.DOCKERHUB_USER} -p {settings.DOCKERHUB_PASSWORD}')
+    if settings.ENV.DOCKERHUB_USER:
+        executor(f'docker login -u {settings.ENV.DOCKERHUB_USER} -p {settings.ENV.DOCKERHUB_PASSWORD}')
     else:
         logger.info('Skipping dockerhub login, you need to manually do that')
 

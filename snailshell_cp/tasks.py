@@ -105,12 +105,12 @@ def deploy_container(
 
     if (
         not is_provisioning and
-        deploy_job.service.container_name == settings.CONTROL_PANEL_CELERY_SERVICE_CONTAINER_NAME
+        deploy_job.service.container_name == settings.ENV.CONTROL_PANEL_CELERY_SERVICE_CONTAINER_NAME
     ):  # noqa
         logger.info('Generating additional tasks for self-update')
         for srv_name in [
-            settings.CONTROL_PANEL_CONTAINER_NAME,
-            settings.CONTROL_PANEL_CELERY_MAIN_CONTAINER_NAME,
+            settings.ENV.CONTROL_PANEL_CONTAINER_NAME,
+            settings.ENV.CONTROL_PANEL_CELERY_MAIN_CONTAINER_NAME,
         ]:
             job = DeployJob.objects.create(
                 service=Service.objects.get(container_name=srv_name),
