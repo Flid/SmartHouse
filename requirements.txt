@@ -1,9 +1,9 @@
 celery==4.1.0
-django==2.0.2
+django==2.1.4
 django-environ==0.4.4
 djangorestframework==3.7.7
 fabric3==1.14.post1
 psycopg2==2.7.4
-requests==2.18.4
+requests==2.21.0
 stormssh==0.6.9
 uWSGI==2.0.14
